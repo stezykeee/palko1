@@ -43,6 +43,10 @@
   --field: #857d73;
   --accent: #a3301d;
   --dough: #efdcb2;
+  --dough-1: #f8ead0;
+  --dough-2: #e7c78f;
+  --wash-1: #f1e1bf;   /* lágy vaj */
+  --wash-2: #f1dcd2;   /* lágy barack-rózsa */
   --ok: #2e5a2b;
   --backdrop: rgba(27, 24, 21, 0.45);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
@@ -53,12 +57,14 @@
   :root:not([data-theme="light"]) {
     --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
     --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+    --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
   --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+  --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
   color-scheme: dark;
 }
 
@@ -74,7 +80,9 @@ html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(env(safe-area-in
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 html:has(dialog[open]) { overflow: hidden; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink);
+  margin: 0; color: var(--ink);
+  /* lágy színátmenet az oldal tetején (a fejléc mögött is folytonos) */
+  background: linear-gradient(165deg, var(--wash-1) 0, color-mix(in srgb, var(--wash-2) 55%, var(--bg)) 360px, var(--bg) 860px) top / 100% 900px no-repeat, var(--bg);
   font: 400 1.0625rem/1.55 var(--sans);
 }
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure, fieldset { margin: 0; padding: 0; }
@@ -108,7 +116,7 @@ img, svg { max-width: 100%; }
 }
 .btn:hover { background: var(--ink); color: var(--bg); }
 .btn-solid { background: var(--ink); color: var(--bg); }
-.btn-solid:hover { background: transparent; color: var(--ink); }
+.btn-solid:hover { background: color-mix(in srgb, var(--ink) 84%, var(--bg)); color: var(--bg); }
 .btn-sm { min-height: 38px; padding: 0 14px; font-size: 0.9375rem; }
 .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 .swap { display: inline-grid; place-items: center; overflow: hidden; }
@@ -128,9 +136,10 @@ img, svg { max-width: 100%; }
 ===================================================================== */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: var(--bg); border-bottom: 1px solid transparent;
+  background: transparent; border-bottom: 1px solid transparent;
 }
-.site-header.is-scrolled { border-bottom-color: var(--line); }
+.site-header.is-scrolled { background: var(--bg); border-bottom-color: var(--line); }
+.site-header:has(.nav.is-open) { background: var(--bg); }
 .header-in { display: flex; align-items: center; gap: 24px; min-height: 68px; }
 .brand { text-decoration: none; margin-right: auto; line-height: 1.15; padding: 6px 0; }
 .brand b { display: block; font: 400 1.375rem/1.1 var(--serif); }
@@ -158,7 +167,9 @@ img, svg { max-width: 100%; }
 /* =====================================================================
    SZEKCIÓK / SECTIONS
 ===================================================================== */
-.section { padding: clamp(64px, 9vw, 112px) 0; border-top: 1px solid var(--line); }
+.section { padding: clamp(64px, 9vw, 112px) 0; border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent) 1; }
+#about { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-2) 70%, var(--bg)) 50%, var(--bg) 100%); }
+#faq { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-1) 45%, var(--bg)) 100%); }
 .section-grid { display: grid; grid-template-columns: 1fr; gap: 28px 48px; }
 @media (min-width: 900px) { .section-grid { grid-template-columns: 4fr 8fr; } }
 .section-grid > * { min-width: 0; }
@@ -176,12 +187,12 @@ img, svg { max-width: 100%; }
 .hero .lead { margin-top: 24px; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
 .drawing { width: min(380px, 80%); justify-self: center; color: var(--ink); }
-.drawing .dough { fill: var(--dough); }
+.drawing .dough { fill: url(#dough-grad); }
 .drawing .cream { fill: #fbf6ec; }
 .drawing .cheese { stroke: #b4831f; }
 .facts { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: clamp(48px, 7vw, 80px); }
 @media (min-width: 700px) { .facts { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
-.facts li { border-top: 1px solid var(--ink); padding: 14px 0 18px; }
+.facts li { border-top: 1px solid transparent; border-image: linear-gradient(90deg, var(--ink), color-mix(in srgb, var(--ink) 15%, transparent)) 1; padding: 14px 0 18px; }
 .facts b { display: block; font-weight: 600; }
 .facts span { color: var(--muted); font-size: 0.9688rem; }
 
@@ -234,12 +245,12 @@ select {
 
 /* Allergének / tables */
 .table-scroll { position: relative; overflow-x: auto; margin-top: 28px; }
-.table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.9688rem; }
+.table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 0.9688rem; }
 .table caption { text-align: left; font-weight: 600; padding-bottom: 10px; }
 .table th, .table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .table thead th { font-weight: 600; color: var(--muted); font-size: 0.875rem; border-bottom-color: var(--ink); }
 .table tbody th { font-weight: 400; }
-.table .c { text-align: center; padding-right: 0; width: 13%; }
+.table .c { text-align: center; padding: 9px 10px; white-space: nowrap; }
 .legend { columns: 2 220px; column-gap: 32px; margin-top: 12px; }
 .legend li { padding: 4px 0; break-inside: avoid; }
 .legend b { display: inline-block; min-width: 1.8em; font-variant-numeric: tabular-nums; }
@@ -259,7 +270,7 @@ select {
 .faq details p { padding: 0 0 18px; color: var(--muted); max-width: 62ch; }
 
 /* Lábléc / footer */
-.footer { border-top: 1px solid var(--ink); padding: 48px 0 40px; font-size: 0.9375rem; }
+.footer { border-top: 1px solid var(--ink); padding: 48px 0 40px; font-size: 0.9375rem; background: color-mix(in srgb, var(--wash-1) 45%, var(--bg)); }
 .footer-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
 @media (min-width: 760px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; } }
 .footer h2 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 8px; }
@@ -272,11 +283,11 @@ select {
 ===================================================================== */
 dialog {
   padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); color: var(--ink);
-  width: min(640px, calc(100% - 24px)); max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain;
+  width: min(640px, calc(100% - 24px)); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain;
 }
 dialog::backdrop { background: var(--backdrop); }
 dialog.drawer {
-  margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(440px, 100%); border-radius: 0; border-width: 0 0 0 1px;
+  margin: 0 0 0 auto; height: 100vh; max-height: 100vh; height: 100dvh; max-height: 100dvh; width: min(440px, 100%); border-radius: 0; border-width: 0 0 0 1px;
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .d-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 0; }
@@ -312,6 +323,8 @@ textarea.input { min-height: 80px; resize: vertical; }
 .error-box ul { list-style: disc; padding-left: 20px; margin-top: 4px; }
 .row2 { display: grid; gap: 0 16px; grid-template-columns: 1fr; }
 @media (min-width: 560px) { .row2 { grid-template-columns: 1fr 1fr; } .row2.zip { grid-template-columns: 8rem 1fr; } }
+.free-bar { height: 3px; margin-top: 8px; background: var(--line); overflow: hidden; }
+.free-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--dough-2), var(--accent)); }
 .lines li { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .lines .name { font-weight: 600; }
 .lines .detail { grid-column: 1 / -1; font-size: 0.875rem; color: var(--muted); }
@@ -378,6 +391,7 @@ textarea.input { min-height: 80px; resize: vertical; }
 
   /* Kosártétel törlése */
   .lines li.is-leaving { animation: leave .22s ease forwards; }
+  .free-bar span { transition: width .5s cubic-bezier(.2, .7, .2, 1); }
 
   /* Rendelés kész: kézzel húzott pipa */
   .done-check .draw { stroke-dasharray: 1; animation: draw .6s cubic-bezier(.55, .1, .3, 1) both; animation-delay: var(--dd, 0s); }
@@ -397,6 +411,13 @@ textarea.input { min-height: 80px; resize: vertical; }
 @keyframes drawer-in { from { transform: translateX(100%); } }
 @keyframes drawer-out { to { transform: translateX(100%); } }
 @keyframes leave { to { opacity: 0; transform: translateX(14px); } }
+
+/* Nyomtatás: minden látszódjon, animáció nélkül */
+@media print {
+  .site-header, dialog, .item-actions, .hero-actions, .skip { display: none !important; }
+  .section.reveal > .wrap, .intro .in, .item { opacity: 1 !important; transform: none !important; animation: none !important; }
+  body { background: #fff; color: #000; }
+}
 
   </style>
 </head>
@@ -446,7 +467,7 @@ const BUSINESS = {
 };
 const DELIVERY_FEE = 790;
 const FREE_DELIVERY_FROM = 7000;
-const LARGE_EXTRA = 600;
+const LARGE_EXTRA = 700;
 /** JS getDay(): 0 = vasárnap / Sunday */
 const HOURS = {
     0: [9, 20],
@@ -459,80 +480,80 @@ const HOURS = {
 };
 const ING = {
     dough: { id: "dough", name: { hu: "burgonyás lángostészta", en: "potato lángos dough" }, allergens: [1], price: 0 },
-    garlic: { id: "garlic", name: { hu: "fokhagymás olaj", en: "garlic oil" }, allergens: [], price: 200 },
-    sourcream: { id: "sourcream", name: { hu: "tejföl", en: "sour cream" }, allergens: [7], price: 300, dairy: true },
-    cheese: { id: "cheese", name: { hu: "reszelt trappista", en: "grated trappista cheese" }, allergens: [7], price: 400, dairy: true },
-    ham: { id: "ham", name: { hu: "főtt sonka", en: "cooked ham" }, allergens: [], price: 500, meat: true },
-    sausage: { id: "sausage", name: { hu: "csípős kolbász", en: "spicy sausage" }, allergens: [], price: 500, meat: true, spicy: true },
-    onion: { id: "onion", name: { hu: "lilahagyma", en: "red onion" }, allergens: [], price: 200 },
-    crackling: { id: "crackling", name: { hu: "házi tepertőkrém", en: "pork crackling spread" }, allergens: [10], price: 400, meat: true },
-    mushroom: { id: "mushroom", name: { hu: "pirított gomba", en: "sautéed mushrooms" }, allergens: [], price: 400 },
-    turo: { id: "turo", name: { hu: "tehéntúró", en: "túró (curd cheese)" }, allergens: [7], price: 400, dairy: true },
-    dill: { id: "dill", name: { hu: "friss kapor", en: "fresh dill" }, allergens: [], price: 150 },
-    chili: { id: "chili", name: { hu: "csípős paprikakrém", en: "hot paprika paste" }, allergens: [], price: 250, spicy: true },
-    cinnamon: { id: "cinnamon", name: { hu: "fahéjas cukor", en: "cinnamon sugar" }, allergens: [], price: 200 },
-    sugar: { id: "sugar", name: { hu: "porcukor", en: "icing sugar" }, allergens: [], price: 150 },
-    jam: { id: "jam", name: { hu: "baracklekvár", en: "apricot jam" }, allergens: [12], price: 350 },
+    garlic: { id: "garlic", name: { hu: "fokhagymás olaj", en: "garlic oil" }, allergens: [], price: 250 },
+    sourcream: { id: "sourcream", name: { hu: "tejföl", en: "sour cream" }, allergens: [7], price: 350, dairy: true },
+    cheese: { id: "cheese", name: { hu: "reszelt trappista", en: "grated trappista cheese" }, allergens: [7], price: 450, dairy: true },
+    ham: { id: "ham", name: { hu: "főtt sonka", en: "cooked ham" }, allergens: [], price: 550, meat: true },
+    sausage: { id: "sausage", name: { hu: "csípős kolbász", en: "spicy sausage" }, allergens: [], price: 550, meat: true, spicy: true },
+    onion: { id: "onion", name: { hu: "lilahagyma", en: "red onion" }, allergens: [], price: 250 },
+    crackling: { id: "crackling", name: { hu: "házi tepertőkrém", en: "pork crackling spread" }, allergens: [10], price: 450, meat: true },
+    mushroom: { id: "mushroom", name: { hu: "pirított gomba", en: "sautéed mushrooms" }, allergens: [], price: 450 },
+    turo: { id: "turo", name: { hu: "tehéntúró", en: "túró (curd cheese)" }, allergens: [7], price: 450, dairy: true },
+    dill: { id: "dill", name: { hu: "friss kapor", en: "fresh dill" }, allergens: [], price: 200 },
+    chili: { id: "chili", name: { hu: "csípős paprikakrém", en: "hot paprika paste" }, allergens: [], price: 300, spicy: true },
+    cinnamon: { id: "cinnamon", name: { hu: "fahéjas cukor", en: "cinnamon sugar" }, allergens: [], price: 250 },
+    sugar: { id: "sugar", name: { hu: "porcukor", en: "icing sugar" }, allergens: [], price: 200 },
+    jam: { id: "jam", name: { hu: "baracklekvár", en: "apricot jam" }, allergens: [12], price: 400 },
 };
 const SAVORY_EXTRAS = ["garlic", "sourcream", "cheese", "ham", "sausage", "onion", "crackling", "mushroom", "turo", "dill", "chili"];
 const SWEET_EXTRAS = ["cinnamon", "sugar", "jam", "sourcream"];
 const PRODUCTS = [
     {
-        id: "sajtos-tejfolos", rank: 1, favorite: true, kind: "savory", price: 1890,
+        id: "sajtos-tejfolos", rank: 1, favorite: true, kind: "savory", price: 1990,
         name: { hu: "Sajtos-tejfölös lángos", en: "Cheese & sour cream lángos" },
         blurb: { hu: "A klasszikus: tejföl, rá frissen reszelt trappista.", en: "The classic: sour cream topped with freshly grated trappista." },
         base: ["dough", "sourcream", "cheese"],
     },
     {
-        id: "kolbaszos", rank: 2, kind: "savory", price: 2390,
+        id: "kolbaszos", rank: 2, kind: "savory", price: 2590,
         name: { hu: "Csípős kolbászos lángos", en: "Spicy sausage lángos" },
         blurb: { hu: "Tejföl, karikázott csípős kolbász, lilahagyma és egy kis paprikakrém.", en: "Sour cream, sliced spicy sausage, red onion and a dab of paprika paste." },
         base: ["dough", "sourcream", "sausage", "onion", "chili"],
     },
     {
-        id: "fokhagymas", rank: 3, kind: "savory", price: 1190,
+        id: "fokhagymas", rank: 3, kind: "savory", price: 1290,
         name: { hu: "Fokhagymás lángos", en: "Garlic lángos" },
         blurb: { hu: "Ecsettel kent, bőséges fokhagymás olaj. Tej és tojás nélkül.", en: "Brushed generously with garlic oil. No milk, no egg." },
         base: ["dough", "garlic"],
     },
     {
-        id: "tejfolos", rank: 4, kind: "savory", price: 1390,
+        id: "tejfolos", rank: 4, kind: "savory", price: 1490,
         name: { hu: "Tejfölös lángos", en: "Sour cream lángos" },
         blurb: { hu: "Egy nagy kanál hűs tejföl a forró tésztán.", en: "A big spoon of cool sour cream on hot dough." },
         base: ["dough", "sourcream"],
     },
     {
-        id: "sonkas", rank: 5, kind: "savory", price: 2390,
+        id: "sonkas", rank: 5, kind: "savory", price: 2590,
         name: { hu: "Sonkás-sajtos lángos", en: "Ham & cheese lángos" },
         blurb: { hu: "Tejföl, csíkokra vágott főtt sonka, a tetején sajt.", en: "Sour cream, strips of cooked ham, cheese on top." },
         base: ["dough", "sourcream", "ham", "cheese"],
     },
     {
-        id: "sos", rank: 6, kind: "savory", price: 990,
+        id: "sos", rank: 6, kind: "savory", price: 1090,
         name: { hu: "Sós lángos", en: "Salted lángos" },
         blurb: { hu: "Csak a tészta és egy csipet só. Aki ismeri, ezt kéri.", en: "Just the dough and a pinch of salt. The purist's order." },
         base: ["dough"],
     },
     {
-        id: "gombas", rank: 7, kind: "savory", price: 2090,
+        id: "gombas", rank: 7, kind: "savory", price: 2290,
         name: { hu: "Gombás-sajtos lángos", en: "Mushroom & cheese lángos" },
         blurb: { hu: "Tejföl, fokhagymán pirított gomba és sajt.", en: "Sour cream, mushrooms sautéed with garlic, and cheese." },
         base: ["dough", "sourcream", "mushroom", "cheese"],
     },
     {
-        id: "tepertos", rank: 8, kind: "savory", price: 1990,
+        id: "tepertos", rank: 8, kind: "savory", price: 2190,
         name: { hu: "Tepertőkrémes lángos", en: "Crackling spread lángos" },
         blurb: { hu: "Házi tepertőkrém vékonyra szelt lilahagymával.", en: "Homemade pork crackling spread with thinly sliced red onion." },
         base: ["dough", "crackling", "onion"],
     },
     {
-        id: "turos", rank: 9, kind: "savory", price: 1990,
+        id: "turos", rank: 9, kind: "savory", price: 2190,
         name: { hu: "Túrós-kapros lángos", en: "Túró & dill lángos" },
         blurb: { hu: "Tejföl, morzsás tehéntúró és friss kapor.", en: "Sour cream, crumbly túró and fresh dill." },
         base: ["dough", "sourcream", "turo", "dill"],
     },
     {
-        id: "fahejas", rank: 10, kind: "sweet", price: 1290,
+        id: "fahejas", rank: 10, kind: "sweet", price: 1390,
         name: { hu: "Fahéjas-cukros lángos", en: "Cinnamon sugar lángos" },
         blurb: { hu: "Édes lezárásnak: forrón megforgatva fahéjas cukorban.", en: "For dessert: tossed hot in cinnamon sugar." },
         base: ["dough", "cinnamon"],
@@ -1329,7 +1350,14 @@ const TEXTS = {
     try {
       const raw = store.get("pm-cart-v2");
       const list = raw ? JSON.parse(raw) : [];
-      return Array.isArray(list) ? list.filter((l) => PRODUCT_BY_ID[l.productId] && l.qty > 0) : [];
+      if (!Array.isArray(list)) return [];
+      const okIng = (arr) => Array.isArray(arr) && arr.every((i) => ING[i]);
+      return list
+        .filter((l) => l && PRODUCT_BY_ID[l.productId] && okIng(l.removed) && okIng(l.extras) && Number(l.qty) > 0)
+        .map((l) => {
+          const cfg = { productId: l.productId, size: l.size === "large" ? "large" : "normal", removed: l.removed, extras: l.extras, note: String(l.note || "").slice(0, 140) };
+          return Object.assign(cfg, { key: lineKey(cfg), qty: Math.min(30, Math.floor(Number(l.qty))) });
+        });
     } catch (e) { return []; }
   }
   const saveCart = () => store.set("pm-cart-v2", JSON.stringify(state.cart));
@@ -1381,16 +1409,19 @@ const TEXTS = {
   /* ---------- ablakok / dialogs ---------- */
   const returnFocus = new Map();
   function openDialog(dlg, trigger) {
+    if (dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
     returnFocus.set(dlg, trigger || document.activeElement);
     if (!dlg.open) dlg.showModal();
     const first = dlg.querySelector("[data-autofocus]") || dlg.querySelector("h2");
     if (first) { if (!first.hasAttribute("tabindex") && first.tagName === "H2") first.setAttribute("tabindex", "-1"); first.focus(); }
   }
   function closeDialog(dlg, instant) {
-    if (!dlg.open || dlg.classList.contains("is-closing")) return;
+    if (!dlg.open) return;
+    if (instant && dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
     if (instant || !motionOK()) { dlg.close(); return; }
+    if (dlg.classList.contains("is-closing")) return;
     dlg.classList.add("is-closing");
-    setTimeout(() => { dlg.classList.remove("is-closing"); dlg.close(); }, 190);
+    dlg._closeTimer = setTimeout(() => { dlg._closeTimer = null; dlg.classList.remove("is-closing"); dlg.close(); }, 190);
   }
   $$("dialog").forEach((dlg) => {
     dlg.addEventListener("close", () => {
@@ -1399,7 +1430,12 @@ const TEXTS = {
       const target = el && (document.contains(el) ? el : el.id ? document.getElementById(el.id) : null);
       if (target) target.focus();
     });
-    dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDialog(dlg); });
+    dlg.addEventListener("click", (e) => {
+      if (e.target !== dlg || e.detail === 0) return;
+      const r = dlg.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) closeDialog(dlg);
+    });
     dlg.addEventListener("cancel", (e) => { e.preventDefault(); closeDialog(dlg); });
   });
 
@@ -1470,6 +1506,12 @@ const TEXTS = {
   /* Kézzel rajzolt lángos – egyszerű vonalas SVG */
   const DRAWING = `
     <svg class="drawing" viewBox="0 0 320 300" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <radialGradient id="dough-grad" cx="45%" cy="40%" r="70%">
+          <stop offset="0%" style="stop-color:var(--dough-1)"/>
+          <stop offset="100%" style="stop-color:var(--dough-2)"/>
+        </radialGradient>
+      </defs>
       <path class="dough draw" pathLength="1" style="--dd:.15s;--dl:1.3s" d="M40 160c-6-44 18-90 64-108 36-14 64-2 92-10 42-10 84 24 90 70 6 38-16 58-8 90 8 36-28 66-74 64-28-1-48 12-84 4-42-8-74-34-76-70-1-14-2-28-4-40z"/>
       <path class="draw" pathLength="1" style="--dd:.9s" d="M62 150c2-30 18-58 48-74" stroke-width="1.3" opacity=".55"/>
       <path class="draw" pathLength="1" style="--dd:1s" d="M262 206c-6 22-26 38-52 44" stroke-width="1.3" opacity=".55"/>
@@ -1802,6 +1844,7 @@ const TEXTS = {
       ? `<div class="d-body"><p>${esc(T.cartUi.empty)}</p><p style="margin-top:16px"><a class="btn" href="#menu" data-action="close-dialog">${esc(T.cartUi.browse)}</a></p></div>`
       : `<div class="d-body">
           <p class="small muted">${esc(missing > 0 ? T.cartUi.toFree(money(missing)) : T.cartUi.free)}</p>
+          <div class="free-bar" aria-hidden="true"><span style="width:${Math.min(100, Math.round((sub / FREE_DELIVERY_FROM) * 100))}%"></span></div>
           <ul class="lines" style="margin-top:8px">
             ${state.cart.map((l, i) => {
               const name = L(PRODUCT_BY_ID[l.productId].name);
@@ -1973,7 +2016,13 @@ const TEXTS = {
 
   function validate() {
     const E = T.checkout.err, e = {}, f = co.f;
-    if (!co.time) e.time = E.time;
+    const fresh = orderSlots(new Date());
+    const stillOk = co.time === "asap" ? fresh.asap : fresh.slots.some((x) => x.value === co.time);
+    if (!co.time || !stillOk) {
+      e.time = E.time;
+      co.slots = fresh;
+      co.time = fresh.asap ? "asap" : (fresh.slots[0] ? fresh.slots[0].value : "");
+    }
     if (f.name.trim().length < 3) e.name = E.name;
     if (!phoneOk(f.phone)) e.phone = E.phone;
     if (!emailOk(f.email)) e.email = E.email;
@@ -2201,7 +2250,13 @@ const TEXTS = {
   })();
 
   /* Nyitvatartási állapot percenkénti frissítése */
-  setInterval(() => { const s = $("#status"); if (s) s.textContent = statusText(); }, 60000);
+  let lastDay = new Date().getDay();
+  setInterval(() => {
+    const s = $("#status");
+    if (s) s.textContent = statusText();
+    const d = new Date().getDay();
+    if (d !== lastDay) { lastDay = d; renderInfo(); }
+  }, 60000);
 
   renderAll();
 })();
@@ -2253,6 +2308,10 @@ const TEXTS = {
   --field: #857d73;
   --accent: #a3301d;
   --dough: #efdcb2;
+  --dough-1: #f8ead0;
+  --dough-2: #e7c78f;
+  --wash-1: #f1e1bf;   /* lágy vaj */
+  --wash-2: #f1dcd2;   /* lágy barack-rózsa */
   --ok: #2e5a2b;
   --backdrop: rgba(27, 24, 21, 0.45);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
@@ -2263,12 +2322,14 @@ const TEXTS = {
   :root:not([data-theme="light"]) {
     --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
     --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+    --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
   --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+  --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
   color-scheme: dark;
 }
 
@@ -2284,7 +2345,9 @@ html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(env(safe-area-in
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 html:has(dialog[open]) { overflow: hidden; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink);
+  margin: 0; color: var(--ink);
+  /* lágy színátmenet az oldal tetején (a fejléc mögött is folytonos) */
+  background: linear-gradient(165deg, var(--wash-1) 0, color-mix(in srgb, var(--wash-2) 55%, var(--bg)) 360px, var(--bg) 860px) top / 100% 900px no-repeat, var(--bg);
   font: 400 1.0625rem/1.55 var(--sans);
 }
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure, fieldset { margin: 0; padding: 0; }
@@ -2318,7 +2381,7 @@ img, svg { max-width: 100%; }
 }
 .btn:hover { background: var(--ink); color: var(--bg); }
 .btn-solid { background: var(--ink); color: var(--bg); }
-.btn-solid:hover { background: transparent; color: var(--ink); }
+.btn-solid:hover { background: color-mix(in srgb, var(--ink) 84%, var(--bg)); color: var(--bg); }
 .btn-sm { min-height: 38px; padding: 0 14px; font-size: 0.9375rem; }
 .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 .swap { display: inline-grid; place-items: center; overflow: hidden; }
@@ -2338,9 +2401,10 @@ img, svg { max-width: 100%; }
 ===================================================================== */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: var(--bg); border-bottom: 1px solid transparent;
+  background: transparent; border-bottom: 1px solid transparent;
 }
-.site-header.is-scrolled { border-bottom-color: var(--line); }
+.site-header.is-scrolled { background: var(--bg); border-bottom-color: var(--line); }
+.site-header:has(.nav.is-open) { background: var(--bg); }
 .header-in { display: flex; align-items: center; gap: 24px; min-height: 68px; }
 .brand { text-decoration: none; margin-right: auto; line-height: 1.15; padding: 6px 0; }
 .brand b { display: block; font: 400 1.375rem/1.1 var(--serif); }
@@ -2368,7 +2432,9 @@ img, svg { max-width: 100%; }
 /* =====================================================================
    SZEKCIÓK / SECTIONS
 ===================================================================== */
-.section { padding: clamp(64px, 9vw, 112px) 0; border-top: 1px solid var(--line); }
+.section { padding: clamp(64px, 9vw, 112px) 0; border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent) 1; }
+#about { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-2) 70%, var(--bg)) 50%, var(--bg) 100%); }
+#faq { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-1) 45%, var(--bg)) 100%); }
 .section-grid { display: grid; grid-template-columns: 1fr; gap: 28px 48px; }
 @media (min-width: 900px) { .section-grid { grid-template-columns: 4fr 8fr; } }
 .section-grid > * { min-width: 0; }
@@ -2386,12 +2452,12 @@ img, svg { max-width: 100%; }
 .hero .lead { margin-top: 24px; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
 .drawing { width: min(380px, 80%); justify-self: center; color: var(--ink); }
-.drawing .dough { fill: var(--dough); }
+.drawing .dough { fill: url(#dough-grad); }
 .drawing .cream { fill: #fbf6ec; }
 .drawing .cheese { stroke: #b4831f; }
 .facts { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: clamp(48px, 7vw, 80px); }
 @media (min-width: 700px) { .facts { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
-.facts li { border-top: 1px solid var(--ink); padding: 14px 0 18px; }
+.facts li { border-top: 1px solid transparent; border-image: linear-gradient(90deg, var(--ink), color-mix(in srgb, var(--ink) 15%, transparent)) 1; padding: 14px 0 18px; }
 .facts b { display: block; font-weight: 600; }
 .facts span { color: var(--muted); font-size: 0.9688rem; }
 
@@ -2444,12 +2510,12 @@ select {
 
 /* Allergének / tables */
 .table-scroll { position: relative; overflow-x: auto; margin-top: 28px; }
-.table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.9688rem; }
+.table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 0.9688rem; }
 .table caption { text-align: left; font-weight: 600; padding-bottom: 10px; }
 .table th, .table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .table thead th { font-weight: 600; color: var(--muted); font-size: 0.875rem; border-bottom-color: var(--ink); }
 .table tbody th { font-weight: 400; }
-.table .c { text-align: center; padding-right: 0; width: 13%; }
+.table .c { text-align: center; padding: 9px 10px; white-space: nowrap; }
 .legend { columns: 2 220px; column-gap: 32px; margin-top: 12px; }
 .legend li { padding: 4px 0; break-inside: avoid; }
 .legend b { display: inline-block; min-width: 1.8em; font-variant-numeric: tabular-nums; }
@@ -2469,7 +2535,7 @@ select {
 .faq details p { padding: 0 0 18px; color: var(--muted); max-width: 62ch; }
 
 /* Lábléc / footer */
-.footer { border-top: 1px solid var(--ink); padding: 48px 0 40px; font-size: 0.9375rem; }
+.footer { border-top: 1px solid var(--ink); padding: 48px 0 40px; font-size: 0.9375rem; background: color-mix(in srgb, var(--wash-1) 45%, var(--bg)); }
 .footer-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
 @media (min-width: 760px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; } }
 .footer h2 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 8px; }
@@ -2482,11 +2548,11 @@ select {
 ===================================================================== */
 dialog {
   padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); color: var(--ink);
-  width: min(640px, calc(100% - 24px)); max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain;
+  width: min(640px, calc(100% - 24px)); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain;
 }
 dialog::backdrop { background: var(--backdrop); }
 dialog.drawer {
-  margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(440px, 100%); border-radius: 0; border-width: 0 0 0 1px;
+  margin: 0 0 0 auto; height: 100vh; max-height: 100vh; height: 100dvh; max-height: 100dvh; width: min(440px, 100%); border-radius: 0; border-width: 0 0 0 1px;
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .d-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 0; }
@@ -2522,6 +2588,8 @@ textarea.input { min-height: 80px; resize: vertical; }
 .error-box ul { list-style: disc; padding-left: 20px; margin-top: 4px; }
 .row2 { display: grid; gap: 0 16px; grid-template-columns: 1fr; }
 @media (min-width: 560px) { .row2 { grid-template-columns: 1fr 1fr; } .row2.zip { grid-template-columns: 8rem 1fr; } }
+.free-bar { height: 3px; margin-top: 8px; background: var(--line); overflow: hidden; }
+.free-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--dough-2), var(--accent)); }
 .lines li { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .lines .name { font-weight: 600; }
 .lines .detail { grid-column: 1 / -1; font-size: 0.875rem; color: var(--muted); }
@@ -2588,6 +2656,7 @@ textarea.input { min-height: 80px; resize: vertical; }
 
   /* Kosártétel törlése */
   .lines li.is-leaving { animation: leave .22s ease forwards; }
+  .free-bar span { transition: width .5s cubic-bezier(.2, .7, .2, 1); }
 
   /* Rendelés kész: kézzel húzott pipa */
   .done-check .draw { stroke-dasharray: 1; animation: draw .6s cubic-bezier(.55, .1, .3, 1) both; animation-delay: var(--dd, 0s); }
@@ -2607,6 +2676,13 @@ textarea.input { min-height: 80px; resize: vertical; }
 @keyframes drawer-in { from { transform: translateX(100%); } }
 @keyframes drawer-out { to { transform: translateX(100%); } }
 @keyframes leave { to { opacity: 0; transform: translateX(14px); } }
+
+/* Nyomtatás: minden látszódjon, animáció nélkül */
+@media print {
+  .site-header, dialog, .item-actions, .hero-actions, .skip { display: none !important; }
+  .section.reveal > .wrap, .intro .in, .item { opacity: 1 !important; transform: none !important; animation: none !important; }
+  body { background: #fff; color: #000; }
+}
 
   </style>
 </head>
@@ -2656,7 +2732,7 @@ const BUSINESS = {
 };
 const DELIVERY_FEE = 790;
 const FREE_DELIVERY_FROM = 7000;
-const LARGE_EXTRA = 600;
+const LARGE_EXTRA = 700;
 /** JS getDay(): 0 = vasárnap / Sunday */
 const HOURS = {
     0: [9, 20],
@@ -2669,80 +2745,80 @@ const HOURS = {
 };
 const ING = {
     dough: { id: "dough", name: { hu: "burgonyás lángostészta", en: "potato lángos dough" }, allergens: [1], price: 0 },
-    garlic: { id: "garlic", name: { hu: "fokhagymás olaj", en: "garlic oil" }, allergens: [], price: 200 },
-    sourcream: { id: "sourcream", name: { hu: "tejföl", en: "sour cream" }, allergens: [7], price: 300, dairy: true },
-    cheese: { id: "cheese", name: { hu: "reszelt trappista", en: "grated trappista cheese" }, allergens: [7], price: 400, dairy: true },
-    ham: { id: "ham", name: { hu: "főtt sonka", en: "cooked ham" }, allergens: [], price: 500, meat: true },
-    sausage: { id: "sausage", name: { hu: "csípős kolbász", en: "spicy sausage" }, allergens: [], price: 500, meat: true, spicy: true },
-    onion: { id: "onion", name: { hu: "lilahagyma", en: "red onion" }, allergens: [], price: 200 },
-    crackling: { id: "crackling", name: { hu: "házi tepertőkrém", en: "pork crackling spread" }, allergens: [10], price: 400, meat: true },
-    mushroom: { id: "mushroom", name: { hu: "pirított gomba", en: "sautéed mushrooms" }, allergens: [], price: 400 },
-    turo: { id: "turo", name: { hu: "tehéntúró", en: "túró (curd cheese)" }, allergens: [7], price: 400, dairy: true },
-    dill: { id: "dill", name: { hu: "friss kapor", en: "fresh dill" }, allergens: [], price: 150 },
-    chili: { id: "chili", name: { hu: "csípős paprikakrém", en: "hot paprika paste" }, allergens: [], price: 250, spicy: true },
-    cinnamon: { id: "cinnamon", name: { hu: "fahéjas cukor", en: "cinnamon sugar" }, allergens: [], price: 200 },
-    sugar: { id: "sugar", name: { hu: "porcukor", en: "icing sugar" }, allergens: [], price: 150 },
-    jam: { id: "jam", name: { hu: "baracklekvár", en: "apricot jam" }, allergens: [12], price: 350 },
+    garlic: { id: "garlic", name: { hu: "fokhagymás olaj", en: "garlic oil" }, allergens: [], price: 250 },
+    sourcream: { id: "sourcream", name: { hu: "tejföl", en: "sour cream" }, allergens: [7], price: 350, dairy: true },
+    cheese: { id: "cheese", name: { hu: "reszelt trappista", en: "grated trappista cheese" }, allergens: [7], price: 450, dairy: true },
+    ham: { id: "ham", name: { hu: "főtt sonka", en: "cooked ham" }, allergens: [], price: 550, meat: true },
+    sausage: { id: "sausage", name: { hu: "csípős kolbász", en: "spicy sausage" }, allergens: [], price: 550, meat: true, spicy: true },
+    onion: { id: "onion", name: { hu: "lilahagyma", en: "red onion" }, allergens: [], price: 250 },
+    crackling: { id: "crackling", name: { hu: "házi tepertőkrém", en: "pork crackling spread" }, allergens: [10], price: 450, meat: true },
+    mushroom: { id: "mushroom", name: { hu: "pirított gomba", en: "sautéed mushrooms" }, allergens: [], price: 450 },
+    turo: { id: "turo", name: { hu: "tehéntúró", en: "túró (curd cheese)" }, allergens: [7], price: 450, dairy: true },
+    dill: { id: "dill", name: { hu: "friss kapor", en: "fresh dill" }, allergens: [], price: 200 },
+    chili: { id: "chili", name: { hu: "csípős paprikakrém", en: "hot paprika paste" }, allergens: [], price: 300, spicy: true },
+    cinnamon: { id: "cinnamon", name: { hu: "fahéjas cukor", en: "cinnamon sugar" }, allergens: [], price: 250 },
+    sugar: { id: "sugar", name: { hu: "porcukor", en: "icing sugar" }, allergens: [], price: 200 },
+    jam: { id: "jam", name: { hu: "baracklekvár", en: "apricot jam" }, allergens: [12], price: 400 },
 };
 const SAVORY_EXTRAS = ["garlic", "sourcream", "cheese", "ham", "sausage", "onion", "crackling", "mushroom", "turo", "dill", "chili"];
 const SWEET_EXTRAS = ["cinnamon", "sugar", "jam", "sourcream"];
 const PRODUCTS = [
     {
-        id: "sajtos-tejfolos", rank: 1, favorite: true, kind: "savory", price: 1890,
+        id: "sajtos-tejfolos", rank: 1, favorite: true, kind: "savory", price: 1990,
         name: { hu: "Sajtos-tejfölös lángos", en: "Cheese & sour cream lángos" },
         blurb: { hu: "A klasszikus: tejföl, rá frissen reszelt trappista.", en: "The classic: sour cream topped with freshly grated trappista." },
         base: ["dough", "sourcream", "cheese"],
     },
     {
-        id: "kolbaszos", rank: 2, kind: "savory", price: 2390,
+        id: "kolbaszos", rank: 2, kind: "savory", price: 2590,
         name: { hu: "Csípős kolbászos lángos", en: "Spicy sausage lángos" },
         blurb: { hu: "Tejföl, karikázott csípős kolbász, lilahagyma és egy kis paprikakrém.", en: "Sour cream, sliced spicy sausage, red onion and a dab of paprika paste." },
         base: ["dough", "sourcream", "sausage", "onion", "chili"],
     },
     {
-        id: "fokhagymas", rank: 3, kind: "savory", price: 1190,
+        id: "fokhagymas", rank: 3, kind: "savory", price: 1290,
         name: { hu: "Fokhagymás lángos", en: "Garlic lángos" },
         blurb: { hu: "Ecsettel kent, bőséges fokhagymás olaj. Tej és tojás nélkül.", en: "Brushed generously with garlic oil. No milk, no egg." },
         base: ["dough", "garlic"],
     },
     {
-        id: "tejfolos", rank: 4, kind: "savory", price: 1390,
+        id: "tejfolos", rank: 4, kind: "savory", price: 1490,
         name: { hu: "Tejfölös lángos", en: "Sour cream lángos" },
         blurb: { hu: "Egy nagy kanál hűs tejföl a forró tésztán.", en: "A big spoon of cool sour cream on hot dough." },
         base: ["dough", "sourcream"],
     },
     {
-        id: "sonkas", rank: 5, kind: "savory", price: 2390,
+        id: "sonkas", rank: 5, kind: "savory", price: 2590,
         name: { hu: "Sonkás-sajtos lángos", en: "Ham & cheese lángos" },
         blurb: { hu: "Tejföl, csíkokra vágott főtt sonka, a tetején sajt.", en: "Sour cream, strips of cooked ham, cheese on top." },
         base: ["dough", "sourcream", "ham", "cheese"],
     },
     {
-        id: "sos", rank: 6, kind: "savory", price: 990,
+        id: "sos", rank: 6, kind: "savory", price: 1090,
         name: { hu: "Sós lángos", en: "Salted lángos" },
         blurb: { hu: "Csak a tészta és egy csipet só. Aki ismeri, ezt kéri.", en: "Just the dough and a pinch of salt. The purist's order." },
         base: ["dough"],
     },
     {
-        id: "gombas", rank: 7, kind: "savory", price: 2090,
+        id: "gombas", rank: 7, kind: "savory", price: 2290,
         name: { hu: "Gombás-sajtos lángos", en: "Mushroom & cheese lángos" },
         blurb: { hu: "Tejföl, fokhagymán pirított gomba és sajt.", en: "Sour cream, mushrooms sautéed with garlic, and cheese." },
         base: ["dough", "sourcream", "mushroom", "cheese"],
     },
     {
-        id: "tepertos", rank: 8, kind: "savory", price: 1990,
+        id: "tepertos", rank: 8, kind: "savory", price: 2190,
         name: { hu: "Tepertőkrémes lángos", en: "Crackling spread lángos" },
         blurb: { hu: "Házi tepertőkrém vékonyra szelt lilahagymával.", en: "Homemade pork crackling spread with thinly sliced red onion." },
         base: ["dough", "crackling", "onion"],
     },
     {
-        id: "turos", rank: 9, kind: "savory", price: 1990,
+        id: "turos", rank: 9, kind: "savory", price: 2190,
         name: { hu: "Túrós-kapros lángos", en: "Túró & dill lángos" },
         blurb: { hu: "Tejföl, morzsás tehéntúró és friss kapor.", en: "Sour cream, crumbly túró and fresh dill." },
         base: ["dough", "sourcream", "turo", "dill"],
     },
     {
-        id: "fahejas", rank: 10, kind: "sweet", price: 1290,
+        id: "fahejas", rank: 10, kind: "sweet", price: 1390,
         name: { hu: "Fahéjas-cukros lángos", en: "Cinnamon sugar lángos" },
         blurb: { hu: "Édes lezárásnak: forrón megforgatva fahéjas cukorban.", en: "For dessert: tossed hot in cinnamon sugar." },
         base: ["dough", "cinnamon"],
@@ -3539,7 +3615,14 @@ const TEXTS = {
     try {
       const raw = store.get("pm-cart-v2");
       const list = raw ? JSON.parse(raw) : [];
-      return Array.isArray(list) ? list.filter((l) => PRODUCT_BY_ID[l.productId] && l.qty > 0) : [];
+      if (!Array.isArray(list)) return [];
+      const okIng = (arr) => Array.isArray(arr) && arr.every((i) => ING[i]);
+      return list
+        .filter((l) => l && PRODUCT_BY_ID[l.productId] && okIng(l.removed) && okIng(l.extras) && Number(l.qty) > 0)
+        .map((l) => {
+          const cfg = { productId: l.productId, size: l.size === "large" ? "large" : "normal", removed: l.removed, extras: l.extras, note: String(l.note || "").slice(0, 140) };
+          return Object.assign(cfg, { key: lineKey(cfg), qty: Math.min(30, Math.floor(Number(l.qty))) });
+        });
     } catch (e) { return []; }
   }
   const saveCart = () => store.set("pm-cart-v2", JSON.stringify(state.cart));
@@ -3591,16 +3674,19 @@ const TEXTS = {
   /* ---------- ablakok / dialogs ---------- */
   const returnFocus = new Map();
   function openDialog(dlg, trigger) {
+    if (dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
     returnFocus.set(dlg, trigger || document.activeElement);
     if (!dlg.open) dlg.showModal();
     const first = dlg.querySelector("[data-autofocus]") || dlg.querySelector("h2");
     if (first) { if (!first.hasAttribute("tabindex") && first.tagName === "H2") first.setAttribute("tabindex", "-1"); first.focus(); }
   }
   function closeDialog(dlg, instant) {
-    if (!dlg.open || dlg.classList.contains("is-closing")) return;
+    if (!dlg.open) return;
+    if (instant && dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
     if (instant || !motionOK()) { dlg.close(); return; }
+    if (dlg.classList.contains("is-closing")) return;
     dlg.classList.add("is-closing");
-    setTimeout(() => { dlg.classList.remove("is-closing"); dlg.close(); }, 190);
+    dlg._closeTimer = setTimeout(() => { dlg._closeTimer = null; dlg.classList.remove("is-closing"); dlg.close(); }, 190);
   }
   $$("dialog").forEach((dlg) => {
     dlg.addEventListener("close", () => {
@@ -3609,7 +3695,12 @@ const TEXTS = {
       const target = el && (document.contains(el) ? el : el.id ? document.getElementById(el.id) : null);
       if (target) target.focus();
     });
-    dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDialog(dlg); });
+    dlg.addEventListener("click", (e) => {
+      if (e.target !== dlg || e.detail === 0) return;
+      const r = dlg.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) closeDialog(dlg);
+    });
     dlg.addEventListener("cancel", (e) => { e.preventDefault(); closeDialog(dlg); });
   });
 
@@ -3680,6 +3771,12 @@ const TEXTS = {
   /* Kézzel rajzolt lángos – egyszerű vonalas SVG */
   const DRAWING = `
     <svg class="drawing" viewBox="0 0 320 300" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <radialGradient id="dough-grad" cx="45%" cy="40%" r="70%">
+          <stop offset="0%" style="stop-color:var(--dough-1)"/>
+          <stop offset="100%" style="stop-color:var(--dough-2)"/>
+        </radialGradient>
+      </defs>
       <path class="dough draw" pathLength="1" style="--dd:.15s;--dl:1.3s" d="M40 160c-6-44 18-90 64-108 36-14 64-2 92-10 42-10 84 24 90 70 6 38-16 58-8 90 8 36-28 66-74 64-28-1-48 12-84 4-42-8-74-34-76-70-1-14-2-28-4-40z"/>
       <path class="draw" pathLength="1" style="--dd:.9s" d="M62 150c2-30 18-58 48-74" stroke-width="1.3" opacity=".55"/>
       <path class="draw" pathLength="1" style="--dd:1s" d="M262 206c-6 22-26 38-52 44" stroke-width="1.3" opacity=".55"/>
@@ -4012,6 +4109,7 @@ const TEXTS = {
       ? `<div class="d-body"><p>${esc(T.cartUi.empty)}</p><p style="margin-top:16px"><a class="btn" href="#menu" data-action="close-dialog">${esc(T.cartUi.browse)}</a></p></div>`
       : `<div class="d-body">
           <p class="small muted">${esc(missing > 0 ? T.cartUi.toFree(money(missing)) : T.cartUi.free)}</p>
+          <div class="free-bar" aria-hidden="true"><span style="width:${Math.min(100, Math.round((sub / FREE_DELIVERY_FROM) * 100))}%"></span></div>
           <ul class="lines" style="margin-top:8px">
             ${state.cart.map((l, i) => {
               const name = L(PRODUCT_BY_ID[l.productId].name);
@@ -4183,7 +4281,13 @@ const TEXTS = {
 
   function validate() {
     const E = T.checkout.err, e = {}, f = co.f;
-    if (!co.time) e.time = E.time;
+    const fresh = orderSlots(new Date());
+    const stillOk = co.time === "asap" ? fresh.asap : fresh.slots.some((x) => x.value === co.time);
+    if (!co.time || !stillOk) {
+      e.time = E.time;
+      co.slots = fresh;
+      co.time = fresh.asap ? "asap" : (fresh.slots[0] ? fresh.slots[0].value : "");
+    }
     if (f.name.trim().length < 3) e.name = E.name;
     if (!phoneOk(f.phone)) e.phone = E.phone;
     if (!emailOk(f.email)) e.email = E.email;
@@ -4411,7 +4515,2278 @@ const TEXTS = {
   })();
 
   /* Nyitvatartási állapot percenkénti frissítése */
-  setInterval(() => { const s = $("#status"); if (s) s.textContent = statusText(); }, 60000);
+  let lastDay = new Date().getDay();
+  setInterval(() => {
+    const s = $("#status");
+    if (s) s.textContent = statusText();
+    const d = new Date().getDay();
+    if (d !== lastDay) { lastDay = d; renderInfo(); }
+  }, 60000);
+
+  renderAll();
+})();
+
+  </script>
+</body>
+</html><!doctype html>
+<!--
+  Palkó Marcsi lángosa – webshop (Nagykátai piac)
+  Egyetlen fájl: HTML + CSS + JavaScript, külső függőség nélkül.
+
+  Gyors útmutató a szerkesztéshez:
+    • Cégadatok, cím, telefon, árak, nyitvatartás, feltétek, allergének → keresd: "ÜZLETI ADATOK"
+    • Minden felületi szöveg (magyar és angol)                              → keresd: "FELÜLETI SZÖVEGEK"
+    • Impresszum, ÁSZF, adatkezelési tájékoztató, akadálymentesség          → keresd: "JOGI SZÖVEGEK"
+    • Színek (világos/sötét téma)                                          → keresd: "SZÍNEK"
+    • Rendelés elküldése (élesítéskor ide kell a backend vagy e-mail-küldés) → keresd: "Élesítéskor"
+-->
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Palkó Marcsi lángosa – Nagykátai piac</title>
+  <meta name="description" content="Palkó Marcsi lángosa a nagykátai piacon: burgonyás tészta, rendelésre sütve. Rendelj online átvételre vagy kiszállításra Nagykátán.">
+  <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161412" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M5 16c-1-6 4-11 11-12 6-1 11 2 12 8 1 6-2 12-8 14-6 2-12 0-14-4-1-2-1-4-1-6z' fill='%23efdcb2' stroke='%231b1815' stroke-width='2'/%3E%3C/svg%3E">
+  <script>
+    /* Téma beállítása betöltés előtt, hogy ne villanjon */
+    (function () {
+      try {
+        var t = localStorage.getItem("pm-theme");
+        if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+        if (localStorage.getItem("pm-lang") === "en") document.documentElement.lang = "en";
+      } catch (e) { document.documentElement.dataset.theme = "light"; }
+    })();
+  </script>
+  <style>
+/* =====================================================================
+   SZÍNEK / COLOURS  –  világos és sötét téma
+===================================================================== */
+:root {
+  --bg: #f6f4ef;
+  --surface: #fdfcfa;
+  --ink: #1b1815;
+  --muted: #5d564e;
+  --line: #d9d4ca;
+  --field: #857d73;
+  --accent: #a3301d;
+  --dough: #efdcb2;
+  --dough-1: #f8ead0;
+  --dough-2: #e7c78f;
+  --wash-1: #f1e1bf;   /* lágy vaj */
+  --wash-2: #f1dcd2;   /* lágy barack-rózsa */
+  --ok: #2e5a2b;
+  --backdrop: rgba(27, 24, 21, 0.45);
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
+    --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+    --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161412; --surface: #1e1b18; --ink: #ece7df; --muted: #a8a096; --line: #36312b; --field: #80776c;
+  --accent: #ec8f74; --dough: #3a3024; --ok: #9fcf94; --backdrop: rgba(0, 0, 0, 0.6);
+  --dough-1: #4a3b27; --dough-2: #2f261b; --wash-1: #2d2419; --wash-2: #2e201e;
+  color-scheme: dark;
+}
+
+/* =====================================================================
+   ALAP / BASE
+===================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+html:has(dialog[open]) { overflow: hidden; }
+body {
+  margin: 0; color: var(--ink);
+  /* lágy színátmenet az oldal tetején (a fejléc mögött is folytonos) */
+  background: linear-gradient(165deg, var(--wash-1) 0, color-mix(in srgb, var(--wash-2) 55%, var(--bg)) 360px, var(--bg) 860px) top / 100% 900px no-repeat, var(--bg);
+  font: 400 1.0625rem/1.55 var(--sans);
+}
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, fieldset { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+fieldset { border: 0; min-width: 0; }
+legend { padding: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+img, svg { max-width: 100%; }
+::selection { background: var(--dough); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px); }
+.muted { color: var(--muted); }
+.small { font-size: 0.9375rem; }
+.serif { font-family: var(--serif); font-weight: 400; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+.skip {
+  position: fixed; left: 12px; top: calc(env(safe-area-inset-top, 0px) + 12px); z-index: 100;
+  background: var(--ink); color: var(--bg); padding: 10px 16px; text-decoration: none; transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
+
+/* Gombok / buttons — laposak, árnyék nélkül */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px; border: 1px solid var(--ink); border-radius: 2px;
+  background: transparent; color: var(--ink); font-weight: 600; font-size: 0.9688rem; text-decoration: none; cursor: pointer;
+}
+.btn:hover { background: var(--ink); color: var(--bg); }
+.btn-solid { background: var(--ink); color: var(--bg); }
+.btn-solid:hover { background: color-mix(in srgb, var(--ink) 84%, var(--bg)); color: var(--bg); }
+.btn-sm { min-height: 38px; padding: 0 14px; font-size: 0.9375rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.swap { display: inline-grid; place-items: center; overflow: hidden; }
+.swap > span { grid-area: 1 / 1; white-space: nowrap; }
+.swap-b { opacity: 0; transform: translateY(110%); }
+.swap.is-added .swap-a { opacity: 0; transform: translateY(-110%); }
+.swap.is-added .swap-b { opacity: 1; transform: none; }
+.btn-solid.swap.is-added { background: transparent; color: var(--ink); }
+.link {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; font-weight: 500;
+}
+.link:hover { text-decoration-thickness: 2px; }
+
+/* =====================================================================
+   FEJLÉC / HEADER
+===================================================================== */
+.site-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: transparent; border-bottom: 1px solid transparent;
+}
+.site-header.is-scrolled { background: var(--bg); border-bottom-color: var(--line); }
+.site-header:has(.nav.is-open) { background: var(--bg); }
+.header-in { display: flex; align-items: center; gap: 24px; min-height: 68px; }
+.brand { text-decoration: none; margin-right: auto; line-height: 1.15; padding: 6px 0; }
+.brand b { display: block; font: 400 1.375rem/1.1 var(--serif); }
+.brand span { display: block; font-size: 0.8125rem; color: var(--muted); }
+.nav ul { display: flex; gap: 22px; }
+.nav a { position: relative; text-decoration: none; font-size: 0.9688rem; padding: 10px 0; display: inline-block; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; }
+.nav a:hover::after, .nav a.is-current::after { transform: scaleX(1); }
+.tools { display: flex; align-items: center; gap: 16px; }
+.cart-btn .count-box { display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.25; }
+.cart-btn .count { display: inline-block; font-variant-numeric: tabular-nums; }
+.nav-toggle { display: none; }
+@media (max-width: 880px) {
+  .header-in { flex-wrap: wrap; gap: 8px 16px; }
+  .nav-toggle { display: inline-flex; }
+  .nav { order: 3; width: 100%; display: none; padding-bottom: 12px; }
+  .nav.is-open { display: block; }
+  .nav ul { flex-direction: column; gap: 0; }
+  .nav a { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .tools .theme-btn, .tools .lang-btn { display: none; }
+  .nav .mobile-tools { display: flex; gap: 20px; padding-top: 12px; }
+}
+@media (min-width: 881px) { .nav .mobile-tools { display: none; } }
+
+/* =====================================================================
+   SZEKCIÓK / SECTIONS
+===================================================================== */
+.section { padding: clamp(64px, 9vw, 112px) 0; border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent) 1; }
+#about { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-2) 70%, var(--bg)) 50%, var(--bg) 100%); }
+#faq { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--wash-1) 45%, var(--bg)) 100%); }
+.section-grid { display: grid; grid-template-columns: 1fr; gap: 28px 48px; }
+@media (min-width: 900px) { .section-grid { grid-template-columns: 4fr 8fr; } }
+.section-grid > * { min-width: 0; }
+.h2 { font: 400 clamp(1.875rem, 3.4vw, 2.625rem)/1.1 var(--serif); letter-spacing: -0.005em; }
+.lead { font-size: 1.125rem; color: var(--muted); max-width: 56ch; }
+
+/* Nyitó / hero */
+.hero { padding: clamp(48px, 8vw, 104px) 0 clamp(48px, 7vw, 88px); }
+.hero-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: 7fr 5fr; } }
+.status { font-size: 0.9375rem; color: var(--muted); }
+.status b { color: var(--ink); font-weight: 600; }
+.status span { white-space: nowrap; }
+.h1 { font: 400 clamp(2.5rem, 6.2vw, 4.75rem)/1.04 var(--serif); letter-spacing: -0.015em; max-width: 13ch; margin-top: 20px; }
+.hero .lead { margin-top: 24px; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
+.drawing { width: min(380px, 80%); justify-self: center; color: var(--ink); }
+.drawing .dough { fill: url(#dough-grad); }
+.drawing .cream { fill: #fbf6ec; }
+.drawing .cheese { stroke: #b4831f; }
+.facts { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: clamp(48px, 7vw, 80px); }
+@media (min-width: 700px) { .facts { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+.facts li { border-top: 1px solid transparent; border-image: linear-gradient(90deg, var(--ink), color-mix(in srgb, var(--ink) 15%, transparent)) 1; padding: 14px 0 18px; }
+.facts b { display: block; font-weight: 600; }
+.facts span { color: var(--muted); font-size: 0.9688rem; }
+
+/* Lángosok / menu */
+.toolbar { display: grid; gap: 18px; margin-top: 8px; }
+.filters { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.filters button {
+  border: 0; background: none; padding: 8px 0; min-height: 40px; cursor: pointer; font-size: 0.9688rem;
+  border-bottom: 1px solid transparent; color: var(--muted);
+}
+.filters button:hover { color: var(--ink); }
+.filters button[aria-pressed="true"] { color: var(--ink); border-bottom: 2px solid var(--ink); font-weight: 600; }
+.toolbar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; font-size: 0.9375rem; }
+.toolbar-row legend, .toolbar-row .label { color: var(--muted); margin-right: 4px; float: left; padding: 10px 14px 0 0; }
+.check { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; margin-right: 18px; cursor: pointer; }
+.check input, .choice input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); flex: none; }
+select {
+  min-height: 40px; padding: 0 34px 0 10px; border: 1px solid var(--field); border-radius: 2px; background-color: var(--surface);
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.result-count { margin-top: 40px; font-size: 0.9375rem; color: var(--muted); }
+.menu-list { display: grid; grid-template-columns: 1fr; column-gap: 56px; margin-top: 12px; }
+@media (min-width: 820px) { .menu-list { grid-template-columns: 1fr 1fr; column-gap: 72px; } }
+.item { border-top: 1px solid var(--line); padding: 22px 0 24px; }
+.item-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.item-head h3 { font: 400 1.375rem/1.2 var(--serif); }
+.item-price { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.item-desc { margin-top: 6px; color: var(--muted); max-width: 46ch; }
+.item-meta { margin-top: 8px; font-size: 0.875rem; color: var(--muted); }
+.fav { color: var(--accent); font-weight: 600; }
+.item-actions { display: flex; align-items: center; gap: 18px; margin-top: 14px; }
+.empty { padding: 32px 0; border-top: 1px solid var(--line); }
+
+/* Átvétel / info */
+.info-cols { display: grid; grid-template-columns: 1fr; gap: 28px; }
+@media (min-width: 700px) { .info-cols { grid-template-columns: repeat(3, 1fr); } }
+.info-cols h3, .h3 { font-weight: 600; font-size: 1.0625rem; }
+.info-cols p { margin-top: 6px; color: var(--muted); }
+.hours { margin-top: 48px; max-width: 460px; }
+.hours table { width: 100%; border-collapse: collapse; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.hours th, .hours td { text-align: left; font-weight: 400; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.hours td { text-align: right; }
+.hours tr.is-today th, .hours tr.is-today td { font-weight: 700; }
+
+/* Rólam / about */
+.about p + p { margin-top: 16px; }
+.about p { font-size: 1.125rem; max-width: 60ch; }
+
+/* Allergének / tables */
+.table-scroll { position: relative; overflow-x: auto; margin-top: 28px; }
+.table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 0.9688rem; }
+.table caption { text-align: left; font-weight: 600; padding-bottom: 10px; }
+.table th, .table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.table thead th { font-weight: 600; color: var(--muted); font-size: 0.875rem; border-bottom-color: var(--ink); }
+.table tbody th { font-weight: 400; }
+.table .c { text-align: center; padding: 9px 10px; white-space: nowrap; }
+.legend { columns: 2 220px; column-gap: 32px; margin-top: 12px; }
+.legend li { padding: 4px 0; break-inside: avoid; }
+.legend b { display: inline-block; min-width: 1.8em; font-variant-numeric: tabular-nums; }
+
+/* Kérdések / FAQ */
+.faq details { border-top: 1px solid var(--line); }
+.faq details:last-child { border-bottom: 1px solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer; padding: 16px 32px 16px 0; position: relative; font-weight: 600;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before, .faq summary::after {
+  content: ""; position: absolute; right: 6px; top: 50%; width: 13px; height: 1.5px; background: currentColor;
+}
+.faq summary::after { transform: rotate(90deg); }
+.faq details[open] summary::after { transform: rotate(0deg); }
+.faq details p { padding: 0 0 18px; color: var(--muted); max-width: 62ch; }
+
+/* Lábléc / footer */
+.footer { border-top: 1px solid var(--ink); padding: 48px 0 40px; font-size: 0.9375rem; background: color-mix(in srgb, var(--wash-1) 45%, var(--bg)); }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+@media (min-width: 760px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; } }
+.footer h2 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 8px; }
+.footer p, .footer li { color: var(--muted); }
+.footer li + li { margin-top: 2px; }
+.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.875rem; }
+
+/* =====================================================================
+   ABLAKOK / DIALOGS
+===================================================================== */
+dialog {
+  padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); color: var(--ink);
+  width: min(640px, calc(100% - 24px)); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain;
+}
+dialog::backdrop { background: var(--backdrop); }
+dialog.drawer {
+  margin: 0 0 0 auto; height: 100vh; max-height: 100vh; height: 100dvh; max-height: 100dvh; width: min(440px, 100%); border-radius: 0; border-width: 0 0 0 1px;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.d-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 0; }
+.d-head h2 { font: 400 1.75rem/1.15 var(--serif); }
+.d-body { padding: 16px 24px 24px; }
+.d-foot {
+  position: sticky; bottom: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 24px; background: var(--surface); border-top: 1px solid var(--line);
+}
+.group { margin-top: 26px; }
+.group > legend, .group > .h3 { font-weight: 600; font-size: 1.0625rem; margin-bottom: 4px; }
+.help { font-size: 0.875rem; color: var(--muted); margin-top: 4px; }
+.choice { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.choice:first-of-type { border-top: 1px solid var(--line); }
+.choice .grow { flex: 1; }
+.choice small { color: var(--muted); font-size: 0.875rem; margin-left: 6px; }
+.choice .price { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+.choice.keep:has(input:not(:checked)) .grow { text-decoration: line-through; color: var(--muted); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--field); border-radius: 2px; }
+.stepper button { width: 40px; height: 40px; border: 0; background: none; cursor: pointer; font-size: 1.125rem; }
+.stepper button:disabled { opacity: 0.35; cursor: not-allowed; }
+.stepper output, .stepper .q { min-width: 2.2em; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.field { margin-top: 16px; }
+.field label { display: block; font-weight: 600; font-size: 0.9688rem; margin-bottom: 6px; }
+.req { color: var(--accent); }
+.input, textarea.input {
+  display: block; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--field); border-radius: 2px; background: var(--bg);
+}
+textarea.input { min-height: 80px; resize: vertical; }
+.input[aria-invalid="true"] { border: 2px solid var(--accent); }
+.error { color: var(--accent); font-size: 0.9375rem; font-weight: 600; margin-top: 6px; }
+.error-box { border: 2px solid var(--accent); padding: 14px 16px; margin-top: 16px; }
+.error-box ul { list-style: disc; padding-left: 20px; margin-top: 4px; }
+.row2 { display: grid; gap: 0 16px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .row2 { grid-template-columns: 1fr 1fr; } .row2.zip { grid-template-columns: 8rem 1fr; } }
+.free-bar { height: 3px; margin-top: 8px; background: var(--line); overflow: hidden; }
+.free-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--dough-2), var(--accent)); }
+.lines li { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.lines .name { font-weight: 600; }
+.lines .detail { grid-column: 1 / -1; font-size: 0.875rem; color: var(--muted); }
+.lines .acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; margin-top: 6px; }
+.totals { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin-top: 16px; font-variant-numeric: tabular-nums; }
+.totals dd { text-align: right; }
+.totals .grand { font-weight: 700; font-size: 1.125rem; padding-top: 8px; border-top: 1px solid var(--ink); margin-top: 6px; }
+.notice { border-left: 2px solid var(--line); padding: 4px 0 4px 12px; color: var(--muted); font-size: 0.9375rem; margin-top: 16px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px 20px; border-bottom: 1px solid var(--line); margin-top: 12px; }
+.tabs button { border: 0; background: none; padding: 10px 0; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+.legal h3 { font-weight: 600; margin-top: 22px; }
+.legal p { margin-top: 6px; max-width: 70ch; }
+.legal .doc-title { font: 400 1.5rem/1.2 var(--serif); margin-top: 20px; }
+
+/* =====================================================================
+   ANIMÁCIÓK / MOTION
+   Rövidek és visszafogottak. Ha a rendszer csökkentett mozgást kér,
+   egyik sem fut (minden azonnal a végállapotában jelenik meg).
+===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  body, .site-header { transition: background-color .25s ease, color .25s ease; }
+  .btn { transition: background-color .15s ease, color .15s ease, transform .1s ease; }
+  .btn:active { transform: translateY(1px); }
+  .link { transition: text-decoration-color .15s ease, text-decoration-thickness .15s ease; }
+  .filters button { transition: color .15s ease; }
+  .nav a::after { transition: transform .28s cubic-bezier(.2, .7, .2, 1); }
+  .site-header { transition: border-color .2s ease, background-color .25s ease; }
+
+  /* Kosárba gomb: a felirat felcsúszik, megjelenik a „Hozzáadva ✓” */
+  .swap > span { transition: transform .32s cubic-bezier(.2, .7, .2, 1), opacity .2s ease; }
+
+  /* Kosár darabszám: az új szám beúszik */
+  .count.tick-up { animation: tick-up .34s cubic-bezier(.2, .7, .2, 1); }
+  .count.tick-down { animation: tick-down .34s cubic-bezier(.2, .7, .2, 1); }
+
+  /* Nyitóoldal: első betöltéskor a szöveg finoman felúszik, a rajz „megrajzolódik” */
+  .intro .in { animation: rise .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 90ms + 60ms); }
+  .intro .draw { stroke-dasharray: 1; animation: draw var(--dl, .6s) cubic-bezier(.55, .1, .3, 1) both; animation-delay: var(--dd, 0s); }
+  .intro .dough { animation-name: draw, fill-in; animation-duration: var(--dl), .7s; animation-delay: var(--dd), .95s; animation-fill-mode: both; }
+  .intro .cream { animation-name: draw, fill-in; animation-duration: var(--dl), .5s; animation-delay: var(--dd), 1.9s; animation-fill-mode: both; }
+  .intro .sprinkle { animation: pop .45s ease both; animation-delay: var(--dd); }
+
+  /* Szekciók: egyszer, finoman beúsznak görgetéskor */
+  .section.reveal > .wrap { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
+  .section.reveal.is-in > .wrap { opacity: 1; transform: none; }
+
+  /* Lángoslista: szűréskor a tételek egymás után jelennek meg */
+  .item { animation: rise .45s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 35ms); }
+
+  /* Kérdések: a + jel mínusszá fordul, a válasz lenyílik (ahol a böngésző tudja) */
+  .faq summary::after { transition: transform .25s ease; }
+  :root { interpolate-size: allow-keywords; }
+  .faq details::details-content { block-size: 0; overflow: hidden; transition: block-size .3s ease, content-visibility .3s allow-discrete; }
+  .faq details[open]::details-content { block-size: auto; }
+
+  /* Ablakok: nyitáskor felúsznak, a kosár oldalról csúszik be */
+  dialog[open] { animation: dlg-in .22s cubic-bezier(.2, .7, .2, 1); }
+  dialog[open]::backdrop { animation: fade-in .22s ease; }
+  dialog.drawer[open] { animation: drawer-in .3s cubic-bezier(.2, .7, .2, 1); }
+  dialog.is-closing { animation: dlg-out .19s ease forwards; }
+  dialog.drawer.is-closing { animation: drawer-out .19s ease-in forwards; }
+  dialog.is-closing::backdrop { animation: fade-out .19s ease forwards; }
+
+  /* Kosártétel törlése */
+  .lines li.is-leaving { animation: leave .22s ease forwards; }
+  .free-bar span { transition: width .5s cubic-bezier(.2, .7, .2, 1); }
+
+  /* Rendelés kész: kézzel húzott pipa */
+  .done-check .draw { stroke-dasharray: 1; animation: draw .6s cubic-bezier(.55, .1, .3, 1) both; animation-delay: var(--dd, 0s); }
+}
+.done-check { width: 44px; height: 44px; margin-bottom: 8px; fill: none; stroke: var(--ok); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+@keyframes draw { 0% { stroke-dashoffset: 1; stroke-opacity: 0; } 3% { stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 1; } }
+@keyframes fill-in { from { fill-opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes tick-up { from { transform: translateY(100%); opacity: 0; } }
+@keyframes tick-down { from { transform: translateY(-100%); opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes dlg-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes dlg-out { to { opacity: 0; transform: translateY(8px); } }
+@keyframes drawer-in { from { transform: translateX(100%); } }
+@keyframes drawer-out { to { transform: translateX(100%); } }
+@keyframes leave { to { opacity: 0; transform: translateX(14px); } }
+
+/* Nyomtatás: minden látszódjon, animáció nélkül */
+@media print {
+  .site-header, dialog, .item-actions, .hero-actions, .skip { display: none !important; }
+  .section.reveal > .wrap, .intro .in, .item { opacity: 1 !important; transform: none !important; animation: none !important; }
+  body { background: #fff; color: #000; }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Ugrás a tartalomra</a>
+  <header class="site-header" id="site-header"></header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="top" aria-label="Palkó Marcsi"></section>
+    <section class="section" id="menu" aria-labelledby="menu-h"></section>
+    <section class="section" id="info"></section>
+    <section class="section" id="about"></section>
+    <section class="section" id="allergens"></section>
+    <section class="section" id="faq"></section>
+    <noscript><div class="wrap section"><p>A rendeléshez kapcsold be a JavaScriptet, vagy hívj minket: +36 30 000 0000.</p></div></noscript>
+  </main>
+
+  <footer class="footer" id="footer"></footer>
+
+  <dialog id="product-dialog" aria-labelledby="pd-title"></dialog>
+  <dialog id="cart-dialog" class="drawer" aria-labelledby="cart-title"></dialog>
+  <dialog id="checkout-dialog" aria-labelledby="co-title"></dialog>
+  <dialog id="legal-dialog" aria-labelledby="legal-title"></dialog>
+  <div id="live" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+/* =====================================================================
+   ÜZLETI ADATOK / BUSINESS DATA
+   Cím, telefon, cégadatok, árak (forintban), nyitvatartás, feltétek,
+   allergének. Élesítés előtt a [szögletes zárójeles] adatokat cseréld ki.
+   DEMO_MODE = true: a rendelés nem megy el sehová (bemutató).
+===================================================================== */
+const DEMO_MODE = true;
+const BUSINESS = {
+    brand: "Palkó Marcsi",
+    address: "Nagykátai piac, 2760 Nagykáta",
+    seat: { hu: "[székhely címe]", en: "[registered office address]" },
+    phone: "+36 30 000 0000",
+    phoneHref: "+36300000000",
+    email: "hello@palkomarcsi.hu",
+    legalName: { hu: "[Vállalkozás teljes neve, pl. Palkó Mária egyéni vállalkozó]", en: "[Full business name, e.g. Mária Palkó, sole trader]" },
+    regNumber: { hu: "[nyilvántartási szám]", en: "[registration number]" },
+    taxNumber: { hu: "[adószám]", en: "[tax number]" },
+    hosting: { hu: "[tárhelyszolgáltató neve, címe, e-mail-címe]", en: "[hosting provider name, address, e-mail]" },
+    conciliation: { hu: "[a székhely szerint illetékes békéltető testület neve és címe]", en: "[name and address of the competent conciliation board]" },
+    processors: { hu: "[számlázóprogram, e-mail-szolgáltató, futárszolgálat neve]", en: "[invoicing software, e-mail provider, courier]" },
+};
+const DELIVERY_FEE = 790;
+const FREE_DELIVERY_FROM = 7000;
+const LARGE_EXTRA = 700;
+/** JS getDay(): 0 = vasárnap / Sunday */
+const HOURS = {
+    0: [9, 20],
+    1: null,
+    2: [10, 20],
+    3: [10, 20],
+    4: [10, 20],
+    5: [10, 20],
+    6: [9, 20],
+};
+const ING = {
+    dough: { id: "dough", name: { hu: "burgonyás lángostészta", en: "potato lángos dough" }, allergens: [1], price: 0 },
+    garlic: { id: "garlic", name: { hu: "fokhagymás olaj", en: "garlic oil" }, allergens: [], price: 250 },
+    sourcream: { id: "sourcream", name: { hu: "tejföl", en: "sour cream" }, allergens: [7], price: 350, dairy: true },
+    cheese: { id: "cheese", name: { hu: "reszelt trappista", en: "grated trappista cheese" }, allergens: [7], price: 450, dairy: true },
+    ham: { id: "ham", name: { hu: "főtt sonka", en: "cooked ham" }, allergens: [], price: 550, meat: true },
+    sausage: { id: "sausage", name: { hu: "csípős kolbász", en: "spicy sausage" }, allergens: [], price: 550, meat: true, spicy: true },
+    onion: { id: "onion", name: { hu: "lilahagyma", en: "red onion" }, allergens: [], price: 250 },
+    crackling: { id: "crackling", name: { hu: "házi tepertőkrém", en: "pork crackling spread" }, allergens: [10], price: 450, meat: true },
+    mushroom: { id: "mushroom", name: { hu: "pirított gomba", en: "sautéed mushrooms" }, allergens: [], price: 450 },
+    turo: { id: "turo", name: { hu: "tehéntúró", en: "túró (curd cheese)" }, allergens: [7], price: 450, dairy: true },
+    dill: { id: "dill", name: { hu: "friss kapor", en: "fresh dill" }, allergens: [], price: 200 },
+    chili: { id: "chili", name: { hu: "csípős paprikakrém", en: "hot paprika paste" }, allergens: [], price: 300, spicy: true },
+    cinnamon: { id: "cinnamon", name: { hu: "fahéjas cukor", en: "cinnamon sugar" }, allergens: [], price: 250 },
+    sugar: { id: "sugar", name: { hu: "porcukor", en: "icing sugar" }, allergens: [], price: 200 },
+    jam: { id: "jam", name: { hu: "baracklekvár", en: "apricot jam" }, allergens: [12], price: 400 },
+};
+const SAVORY_EXTRAS = ["garlic", "sourcream", "cheese", "ham", "sausage", "onion", "crackling", "mushroom", "turo", "dill", "chili"];
+const SWEET_EXTRAS = ["cinnamon", "sugar", "jam", "sourcream"];
+const PRODUCTS = [
+    {
+        id: "sajtos-tejfolos", rank: 1, favorite: true, kind: "savory", price: 1990,
+        name: { hu: "Sajtos-tejfölös lángos", en: "Cheese & sour cream lángos" },
+        blurb: { hu: "A klasszikus: tejföl, rá frissen reszelt trappista.", en: "The classic: sour cream topped with freshly grated trappista." },
+        base: ["dough", "sourcream", "cheese"],
+    },
+    {
+        id: "kolbaszos", rank: 2, kind: "savory", price: 2590,
+        name: { hu: "Csípős kolbászos lángos", en: "Spicy sausage lángos" },
+        blurb: { hu: "Tejföl, karikázott csípős kolbász, lilahagyma és egy kis paprikakrém.", en: "Sour cream, sliced spicy sausage, red onion and a dab of paprika paste." },
+        base: ["dough", "sourcream", "sausage", "onion", "chili"],
+    },
+    {
+        id: "fokhagymas", rank: 3, kind: "savory", price: 1290,
+        name: { hu: "Fokhagymás lángos", en: "Garlic lángos" },
+        blurb: { hu: "Ecsettel kent, bőséges fokhagymás olaj. Tej és tojás nélkül.", en: "Brushed generously with garlic oil. No milk, no egg." },
+        base: ["dough", "garlic"],
+    },
+    {
+        id: "tejfolos", rank: 4, kind: "savory", price: 1490,
+        name: { hu: "Tejfölös lángos", en: "Sour cream lángos" },
+        blurb: { hu: "Egy nagy kanál hűs tejföl a forró tésztán.", en: "A big spoon of cool sour cream on hot dough." },
+        base: ["dough", "sourcream"],
+    },
+    {
+        id: "sonkas", rank: 5, kind: "savory", price: 2590,
+        name: { hu: "Sonkás-sajtos lángos", en: "Ham & cheese lángos" },
+        blurb: { hu: "Tejföl, csíkokra vágott főtt sonka, a tetején sajt.", en: "Sour cream, strips of cooked ham, cheese on top." },
+        base: ["dough", "sourcream", "ham", "cheese"],
+    },
+    {
+        id: "sos", rank: 6, kind: "savory", price: 1090,
+        name: { hu: "Sós lángos", en: "Salted lángos" },
+        blurb: { hu: "Csak a tészta és egy csipet só. Aki ismeri, ezt kéri.", en: "Just the dough and a pinch of salt. The purist's order." },
+        base: ["dough"],
+    },
+    {
+        id: "gombas", rank: 7, kind: "savory", price: 2290,
+        name: { hu: "Gombás-sajtos lángos", en: "Mushroom & cheese lángos" },
+        blurb: { hu: "Tejföl, fokhagymán pirított gomba és sajt.", en: "Sour cream, mushrooms sautéed with garlic, and cheese." },
+        base: ["dough", "sourcream", "mushroom", "cheese"],
+    },
+    {
+        id: "tepertos", rank: 8, kind: "savory", price: 2190,
+        name: { hu: "Tepertőkrémes lángos", en: "Crackling spread lángos" },
+        blurb: { hu: "Házi tepertőkrém vékonyra szelt lilahagymával.", en: "Homemade pork crackling spread with thinly sliced red onion." },
+        base: ["dough", "crackling", "onion"],
+    },
+    {
+        id: "turos", rank: 9, kind: "savory", price: 2190,
+        name: { hu: "Túrós-kapros lángos", en: "Túró & dill lángos" },
+        blurb: { hu: "Tejföl, morzsás tehéntúró és friss kapor.", en: "Sour cream, crumbly túró and fresh dill." },
+        base: ["dough", "sourcream", "turo", "dill"],
+    },
+    {
+        id: "fahejas", rank: 10, kind: "sweet", price: 1390,
+        name: { hu: "Fahéjas-cukros lángos", en: "Cinnamon sugar lángos" },
+        blurb: { hu: "Édes lezárásnak: forrón megforgatva fahéjas cukorban.", en: "For dessert: tossed hot in cinnamon sugar." },
+        base: ["dough", "cinnamon"],
+    },
+];
+const PRODUCT_BY_ID = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
+const ALLERGENS = [
+    { id: 1, name: { hu: "Glutént tartalmazó gabona", en: "Cereals containing gluten" } },
+    { id: 2, name: { hu: "Rákfélék", en: "Crustaceans" } },
+    { id: 3, name: { hu: "Tojás", en: "Eggs" } },
+    { id: 4, name: { hu: "Halak", en: "Fish" } },
+    { id: 5, name: { hu: "Földimogyoró", en: "Peanuts" } },
+    { id: 6, name: { hu: "Szójabab", en: "Soybeans" } },
+    { id: 7, name: { hu: "Tej (laktóz is)", en: "Milk (incl. lactose)" } },
+    { id: 8, name: { hu: "Diófélék", en: "Tree nuts" } },
+    { id: 9, name: { hu: "Zeller", en: "Celery" } },
+    { id: 10, name: { hu: "Mustár", en: "Mustard" } },
+    { id: 11, name: { hu: "Szezámmag", en: "Sesame seeds" } },
+    { id: 12, name: { hu: "Kén-dioxid és szulfitok", en: "Sulphur dioxide & sulphites" } },
+    { id: 13, name: { hu: "Csillagfürt", en: "Lupin" } },
+    { id: 14, name: { hu: "Puhatestűek", en: "Molluscs" } },
+];
+const ALLERGEN_SHORT = {
+    1: { hu: "Glutén", en: "Gluten" },
+    7: { hu: "Tej", en: "Milk" },
+    10: { hu: "Mustár", en: "Mustard" },
+    12: { hu: "Szulfit", en: "Sulphites" },
+};
+const USED_ALLERGENS = [1, 7, 10, 12];
+const lineKey = (c) => [c.productId, c.size, [...c.removed].sort().join("+"), [...c.extras].sort().join("+"), c.note.trim()].join("|");
+const unitPrice = (c) => {
+    const p = PRODUCT_BY_ID[c.productId];
+    return p.price + (c.size === "large" ? LARGE_EXTRA : 0) + c.extras.reduce((s, id) => s + ING[id].price, 0);
+};
+const lineIngredients = (c) => {
+    const p = PRODUCT_BY_ID[c.productId];
+    return [...p.base.filter((i) => !c.removed.includes(i)), ...c.extras];
+};
+const allergensOf = (ings) => Array.from(new Set(ings.flatMap((i) => ING[i].allergens))).sort((a, b) => a - b);
+const dietOf = (ings) => {
+    const meat = ings.some((i) => ING[i].meat);
+    const dairy = ings.some((i) => ING[i].dairy);
+    return { veg: !meat, vegan: !meat && !dairy, spicy: ings.some((i) => ING[i].spicy) };
+};
+const defaultConfig = (productId) => ({ productId, size: "normal", removed: [], extras: [], note: "" });
+/* --------------------------- Nyitvatartás / hours --------------------------- */
+const pad = (n) => String(n).padStart(2, "0");
+const hhmm = (h, m = 0) => `${h}:${pad(m)}`;
+function openStatus(now) {
+    const today = HOURS[now.getDay()];
+    const mins = now.getHours() * 60 + now.getMinutes();
+    if (today && mins >= today[0] * 60 && mins < today[1] * 60)
+        return { open: true, closeAt: hhmm(today[1]) };
+    for (let d = 0; d < 8; d++) {
+        const date = new Date(now);
+        date.setDate(now.getDate() + d);
+        const h = HOURS[date.getDay()];
+        if (!h)
+            continue;
+        if (d === 0 && mins >= h[0] * 60)
+            continue;
+        return { open: false, inDays: d, weekday: date.getDay(), openAt: hhmm(h[0]) };
+    }
+    return { open: false, inDays: 1, weekday: 2, openAt: "10:00" };
+}
+function orderSlots(now) {
+    for (let d = 0; d < 8; d++) {
+        const date = new Date(now);
+        date.setDate(now.getDate() + d);
+        date.setHours(0, 0, 0, 0);
+        const h = HOURS[date.getDay()];
+        if (!h)
+            continue;
+        let start = h[0] * 60 + 30;
+        const end = h[1] * 60 - 15;
+        if (d === 0) {
+            const earliest = now.getHours() * 60 + now.getMinutes() + 30;
+            start = Math.max(start, Math.ceil(earliest / 15) * 15);
+        }
+        if (start > end)
+            continue;
+        const slots = [];
+        for (let m = start; m <= end; m += 15) {
+            const label = hhmm(Math.floor(m / 60), m % 60);
+            slots.push({ value: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${label}`, label });
+        }
+        const nowMins = now.getHours() * 60 + now.getMinutes();
+        const todayH = HOURS[now.getDay()];
+        const asap = d === 0 && !!todayH && nowMins >= todayH[0] * 60 && nowMins + 30 <= todayH[1] * 60;
+        return { inDays: d, weekday: date.getDay(), slots, asap };
+    }
+    return { inDays: 0, weekday: now.getDay(), slots: [], asap: false };
+}
+
+/* =====================================================================
+   JOGI SZÖVEGEK / LEGAL TEXTS
+   Impresszum, ÁSZF, adatkezelési tájékoztató, akadálymentességi nyilatkozat.
+   A cégadatokat a fenti BUSINESS objektumból veszi.
+===================================================================== */
+const B = BUSINESS;
+const ft = (n) => `${n.toLocaleString("hu-HU")} Ft`;
+function legalDocs(lang) {
+    const L = (x) => x[lang];
+    if (lang === "hu") {
+        return {
+            impressum: {
+                title: "Impresszum",
+                updated: "Hatályos: 2026. október 6-tól",
+                sections: [
+                    { h: "A szolgáltató adatai", p: [
+                            `Név: ${L(B.legalName)}`,
+                            `Székhely: ${L(B.seat)}`,
+                            `Üzlet (árusítóhely): ${B.address}`,
+                            `Nyilvántartási szám: ${L(B.regNumber)}`,
+                            `Adószám: ${L(B.taxNumber)}`,
+                            `Telefon: ${B.phone}, e-mail: ${B.email}`,
+                        ] },
+                    { h: "Tárhelyszolgáltató", p: [L(B.hosting)] },
+                    { h: "Szerzői jog", p: ["Az oldal szövegei és rajzai a szolgáltató tulajdonát képezik, engedély nélkül nem használhatók fel."] },
+                ],
+            },
+            terms: {
+                title: "Általános Szerződési Feltételek (ÁSZF)",
+                updated: "Hatályos: 2026. október 6-tól",
+                sections: [
+                    { h: "1. Kik vagyunk, mire vonatkozik", p: [
+                            "Ez az ÁSZF a Palkó Marcsi lángosozó webshopjában leadott rendelésekre vonatkozik. A szolgáltató adatait az Impresszum tartalmazza.",
+                            "A szerződés nyelve magyar. A szerződés elektronikus úton jön létre, nem minősül írásba foglaltnak, és nem iktatjuk. Magatartási kódexnek nem vetettük alá magunkat.",
+                        ] },
+                    { h: "2. Termékek és árak", p: [
+                            "A lángosokat rendelésre, frissen készítjük. A rajzok illusztrációk.",
+                            "Az árak forintban értendő bruttó árak, az áfát tartalmazzák. A feltétek és az óriás méret felára a termék testreszabásakor látható.",
+                            "Nyilvánvalóan hibás ár (például 0 Ft) esetén nem vagyunk kötelesek a terméket ezen az áron teljesíteni; ilyenkor felajánljuk a helyes árat, vagy a rendelést lemondhatod.",
+                        ] },
+                    { h: "3. A rendelés menete", p: [
+                            "Válaszd ki és szükség szerint szabd testre a lángost, tedd a kosárba, majd a pénztárban add meg az átvétel módját, az időpontot és az adataidat.",
+                            "A rendelés elküldése előtt az összesítő oldalon minden adatot ellenőrizhetsz, és a „Vissza” gombbal vagy a kosárban javíthatod.",
+                            "A „Megrendelés fizetési kötelezettséggel” gomb megnyomásával fizetési kötelezettséggel járó ajánlatot teszel. A rendelést e-mailben haladéktalanul visszaigazoljuk; ha a visszaigazolás 48 órán belül nem érkezik meg, mentesülsz az ajánlati kötöttség alól.",
+                        ] },
+                    { h: "4. Fizetés", p: [
+                            "Átvételkor fizethetsz készpénzzel, bankkártyával vagy SZÉP-kártyával. Online fizetésre jelenleg nincs lehetőség.",
+                            "A vásárlásról nyugtát vagy kérésre számlát adunk.",
+                        ] },
+                    { h: "5. Átvétel és kiszállítás", p: [
+                            `Személyes átvétel díjtalanul: ${B.address}`,
+                            `Kiszállítás Nagykátán és kb. 5 km-es körzetében, díja ${ft(DELIVERY_FEE)}, ${ft(FREE_DELIVERY_FROM)} feletti rendelésnél ingyenes. A megadott idők tájékoztató jellegűek.`,
+                            "Ha a futár a megadott címen nem ér el, telefonon keres. Sikertelen kézbesítés esetén is kérjük a rendelés kifizetését, mert az étel egyedileg készült.",
+                        ] },
+                    { h: "6. Elállási jog", p: [
+                            "A 45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés c) és d) pontja alapján a fogyasztó kérésére egyedileg előállított, valamint romlandó, rövid ideig eltartható termékre a 14 napos elállási jog nem vonatkozik. A lángos ilyen termék.",
+                        ] },
+                    { h: "7. Minőségi kifogás és panaszkezelés", p: [
+                            `Ha a rendeléssel gond van, kérjük, azonnal jelezd telefonon (${B.phone}) vagy e-mailben (${B.email}). A hibás vagy hiányos teljesítést kicseréljük vagy jóváírjuk.`,
+                            "A szóbeli panaszt azonnal kivizsgáljuk. Az írásbeli panaszra 30 napon belül írásban válaszolunk, és a panaszról jegyzőkönyvet veszünk fel, amelyet a jogszabályban előírt ideig megőrzünk.",
+                        ] },
+                    { h: "8. Jogorvoslat", p: [
+                            "Fogyasztói panasszal a lakóhelyed szerint illetékes vármegyei kormányhivatalhoz mint fogyasztóvédelmi hatósághoz fordulhatsz.",
+                            `Vitás ügyben a békéltető testülethez is fordulhatsz: ${L(B.conciliation)}`,
+                            "Ezen kívül bírósághoz is fordulhatsz a polgári perrendtartás szabályai szerint.",
+                        ] },
+                ],
+            },
+            privacy: {
+                title: "Adatkezelési tájékoztató",
+                updated: "Hatályos: 2026. október 6-tól",
+                sections: [
+                    { h: "1. Az adatkezelő", p: [
+                            `${L(B.legalName)}, ${L(B.seat)}. Elérhetőség: ${B.email}, ${B.phone}.`,
+                            "Az adataidat az Európai Parlament és a Tanács (EU) 2016/679 rendelete (GDPR) és az információs önrendelkezési jogról szóló 2011. évi CXII. törvény (Infotv.) szerint kezeljük.",
+                        ] },
+                    { h: "2. Rendelés teljesítése", p: [
+                            "Kezelt adatok: név, telefonszám, e-mail-cím, kiszállításnál a cím, a rendelés tartalma és a megjegyzések.",
+                            "Cél: a rendelés elkészítése, átadása vagy kiszállítása, kapcsolattartás a rendeléssel kapcsolatban.",
+                            "Jogalap: szerződés teljesítése, GDPR 6. cikk (1) bekezdés b) pont. Az adatok megadása nélkül nem tudunk rendelést teljesíteni.",
+                            "Időtartam: a teljesítéstől számított 5 évig (a Ptk. szerinti általános elévülési idő).",
+                        ] },
+                    { h: "3. Számviteli bizonylatok", p: [
+                            "Kezelt adatok: a nyugtán vagy számlán szereplő adatok.",
+                            "Jogalap: jogi kötelezettség teljesítése, GDPR 6. cikk (1) bekezdés c) pont, a számvitelről szóló 2000. évi C. törvény 169. §-a alapján.",
+                            "Időtartam: 8 év.",
+                        ] },
+                    { h: "4. Hírlevél (nem kötelező)", p: [
+                            "Kezelt adat: e-mail-cím, név. Cél: tájékoztatás az új ízekről.",
+                            "Jogalap: hozzájárulásod, GDPR 6. cikk (1) bekezdés a) pont. Hozzájárulásodat bármikor, indoklás nélkül visszavonhatod a levelek alján lévő linkkel vagy e-mailben; ez nem érinti a korábbi adatkezelés jogszerűségét.",
+                            "Időtartam: a hozzájárulás visszavonásáig.",
+                        ] },
+                    { h: "5. Sütik és helyi tárolás", p: [
+                            "Nem használunk analitikai, reklám- vagy követő sütiket, és harmadik féltől származó betűtípust vagy szkriptet sem töltünk be.",
+                            "A kosár tartalmát, a választott nyelvet, témát és az animációs beállítást a böngésződ helyi tárhelye (localStorage) őrzi meg. Ezek az adatok nem jutnak el hozzánk, a működéshez szükségesek, és a böngésző beállításaiban bármikor törölheted őket.",
+                        ] },
+                    { h: "6. Adatfeldolgozók és címzettek", p: [
+                            `Az adatokat csak a feladatukhoz szükséges mértékben ismerhetik meg: ${L(B.processors)}; tárhely: ${L(B.hosting)}.`,
+                            "Adataidat nem adjuk el, és nem továbbítjuk az Európai Gazdasági Térségen kívülre.",
+                        ] },
+                    { h: "7. Adatbiztonság", p: [
+                            "Az oldal titkosított (HTTPS) kapcsolaton érhető el. Az adatokhoz csak az fér hozzá, akinek a rendelés teljesítéséhez szüksége van rájuk.",
+                        ] },
+                    { h: "8. A jogaid", p: [
+                            "Kérheted a hozzáférést az adataidhoz (15. cikk), azok helyesbítését (16. cikk), törlését (17. cikk), a kezelés korlátozását (18. cikk), az adathordozhatóságot (20. cikk), és tiltakozhatsz az adatkezelés ellen (21. cikk).",
+                            `Kérésedre egy hónapon belül válaszolunk (12. cikk). Írj a ${B.email} címre.`,
+                        ] },
+                    { h: "9. Jogorvoslat", p: [
+                            "Panasszal a Nemzeti Adatvédelmi és Információszabadság Hatósághoz fordulhatsz: 1055 Budapest, Falk Miksa utca 9–11.; postacím: 1363 Budapest, Pf. 9.; telefon: +36 1 391 1400; e-mail: ugyfelszolgalat@naih.hu; www.naih.hu.",
+                            "Jogaid megsértése esetén bírósághoz is fordulhatsz; a pert a lakóhelyed szerint illetékes törvényszék előtt is megindíthatod.",
+                        ] },
+                ],
+            },
+            a11y: {
+                title: "Akadálymentességi nyilatkozat",
+                updated: "Utolsó felülvizsgálat: 2026. október 6., önértékelés alapján",
+                sections: [
+                    { h: "Célunk", p: [
+                            "Azt szeretnénk, hogy mindenki egyedül, segítség nélkül tudjon lángost rendelni. Az oldalt a WCAG 2.1 irányelv AA szintjének megfelelően készítettük, az Európai Akadálymentesítési Irányelv ((EU) 2019/882) szem előtt tartásával.",
+                        ] },
+                    { h: "Amit megtettünk", p: [
+                            "Az oldal teljes egészében billentyűzettel használható, a fókusz mindig jól látható, és az oldal elején egy „Ugrás a tartalomra” link segíti a navigációt.",
+                            "A szövegek és a háttér kontrasztja legalább 4,5:1, mindkét témában. A színek mellett mindig szöveg is jelzi az információt, például az allergéneknél.",
+                            "Az animációk az oldal tetején szüneteltethetők, és alapból kikapcsolnak, ha a rendszered csökkentett mozgást kér.",
+                            "Az oldal 200%-os nagyításnál és mobilon is használható. Az űrlapmezőknek látható címkéjük van, a hibaüzenetek pontosan megmondják, mit kell javítani.",
+                            "A kosár változásait a képernyőolvasók is bejelentik. A nyelvváltás az oldal nyelvi beállítását is módosítja.",
+                        ] },
+                    { h: "Ismert korlátok", p: [
+                            "A lángosrajzok díszítő elemek; minden információjuk szövegesen is elérhető. Ha bármilyen akadályba ütközöl, kérjük, jelezd.",
+                        ] },
+                    { h: "Visszajelzés", p: [
+                            `Írj a ${B.email} címre vagy hívj a ${B.phone} számon. 8 munkanapon belül válaszolunk, és ha kell, telefonon felvesszük a rendelésed.`,
+                        ] },
+                ],
+            },
+        };
+    }
+    return {
+        impressum: {
+            title: "Legal notice",
+            updated: "Effective from 6 October 2026",
+            sections: [
+                { h: "Service provider", p: [
+                        `Name: ${L(B.legalName)}`,
+                        `Registered office: ${L(B.seat)}`,
+                        `Shop (market stall): ${B.address}`,
+                        `Registration number: ${L(B.regNumber)}`,
+                        `Tax number: ${L(B.taxNumber)}`,
+                        `Phone: ${B.phone}, email: ${B.email}`,
+                    ] },
+                { h: "Hosting provider", p: [L(B.hosting)] },
+                { h: "Copyright", p: ["The texts and illustrations on this site belong to the service provider and may not be used without permission."] },
+                { h: "Language", p: ["This English version is provided for convenience. The Hungarian version is legally binding."] },
+            ],
+        },
+        terms: {
+            title: "Terms and Conditions",
+            updated: "Effective from 6 October 2026",
+            sections: [
+                { h: "1. Who we are", p: [
+                        "These terms apply to orders placed in the Palkó Marcsi lángos webshop. Provider details are in the Legal notice.",
+                        "The contract is concluded electronically in Hungarian, is not considered a written contract and is not filed. We have not subscribed to any code of conduct.",
+                    ] },
+                { h: "2. Products and prices", p: [
+                        "We make every lángos fresh, to order. Illustrations are for guidance only.",
+                        "Prices are gross prices in Hungarian forints and include VAT. Topping and giant-size surcharges are shown when you customise a product.",
+                        "If a price is obviously wrong (for example HUF 0), we are not obliged to sell at that price; we'll offer the correct price or you can cancel.",
+                    ] },
+                { h: "3. How ordering works", p: [
+                        "Choose and customise your lángos, add it to the cart, then at checkout enter how and when you want it and your details.",
+                        "Before sending, you can check everything on the review step and correct it with the Back button or in the cart.",
+                        "Pressing “Place order with obligation to pay” makes an offer that involves an obligation to pay. We confirm orders by email without delay; if you don't receive a confirmation within 48 hours, you are released from your offer.",
+                    ] },
+                { h: "4. Payment", p: ["Pay on receipt with cash, bank card or SZÉP card. Online payment is not available yet. You'll get a receipt, or an invoice on request."] },
+                { h: "5. Pickup and delivery", p: [
+                        `Free pickup: ${B.address}`,
+                        `Delivery in Nagykáta and within approx. 5 km costs ${ft(DELIVERY_FEE)}, free on orders over ${ft(FREE_DELIVERY_FROM)}. Times are estimates.`,
+                        "If the courier can't reach you, they'll call you. Food made to order must be paid for even if delivery fails.",
+                    ] },
+                { h: "6. Right of withdrawal", p: ["Under Section 29(1)(c) and (d) of Hungarian Government Decree 45/2014, the 14-day right of withdrawal does not apply to goods made to the consumer's specifications or goods that spoil quickly. Lángos is both."] },
+                { h: "7. Quality issues and complaints", p: [
+                        `If something is wrong with your order, tell us right away by phone (${B.phone}) or email (${B.email}). We'll replace or refund anything faulty or missing.`,
+                        "We handle verbal complaints immediately and reply to written complaints within 30 days.",
+                    ] },
+                { h: "8. Remedies", p: [
+                        "You can contact the consumer protection authority (the county government office for your place of residence).",
+                        `You can also turn to a conciliation board: ${L(B.conciliation)}`,
+                        "You may also go to court.",
+                    ] },
+            ],
+        },
+        privacy: {
+            title: "Privacy Notice",
+            updated: "Effective from 6 October 2026",
+            sections: [
+                { h: "1. Controller", p: [
+                        `${L(B.legalName)}, ${L(B.seat)}. Contact: ${B.email}, ${B.phone}.`,
+                        "We process your data under the EU General Data Protection Regulation (GDPR) and Hungarian Act CXII of 2011.",
+                    ] },
+                { h: "2. Fulfilling your order", p: [
+                        "Data: name, phone, email, delivery address (if delivered), order contents and notes.",
+                        "Purpose: making, handing over or delivering your order and contacting you about it.",
+                        "Legal basis: performance of a contract, GDPR Art. 6(1)(b). We can't fulfil an order without this data.",
+                        "Retention: 5 years from fulfilment (the general limitation period under the Hungarian Civil Code).",
+                    ] },
+                { h: "3. Accounting records", p: ["Data shown on receipts or invoices. Legal basis: legal obligation, GDPR Art. 6(1)(c) and Section 169 of Hungarian Act C of 2000 on Accounting. Retention: 8 years."] },
+                { h: "4. Newsletter (optional)", p: ["Data: email, name. Purpose: news about new flavours. Legal basis: your consent, GDPR Art. 6(1)(a). You can withdraw consent any time via the link in each email or by writing to us; this doesn't affect earlier processing. Retention: until you withdraw consent."] },
+                { h: "5. Cookies and local storage", p: [
+                        "We don't use analytics, advertising or tracking cookies, and we don't load fonts or scripts from third parties.",
+                        "Your cart, language, theme and animation setting are kept in your browser's local storage. This data never reaches us, is needed for the site to work, and you can delete it in your browser settings at any time.",
+                    ] },
+                { h: "6. Processors and recipients", p: [
+                        `Only where needed for their task: ${L(B.processors)}; hosting: ${L(B.hosting)}.`,
+                        "We don't sell your data or transfer it outside the European Economic Area.",
+                    ] },
+                { h: "7. Security", p: ["The site uses an encrypted (HTTPS) connection. Only people who need your data to fulfil your order can access it."] },
+                { h: "8. Your rights", p: [
+                        "You can request access (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction (Art. 18) and data portability (Art. 20), and you can object (Art. 21).",
+                        `We reply within one month (Art. 12). Write to ${B.email}.`,
+                    ] },
+                { h: "9. Complaints", p: [
+                        "You can complain to the Hungarian National Authority for Data Protection and Freedom of Information (NAIH): 1055 Budapest, Falk Miksa utca 9–11; postal address: 1363 Budapest, Pf. 9; phone +36 1 391 1400; email ugyfelszolgalat@naih.hu; www.naih.hu.",
+                        "You can also go to court, including the regional court for your place of residence.",
+                    ] },
+            ],
+        },
+        a11y: {
+            title: "Accessibility statement",
+            updated: "Last reviewed 6 October 2026, by self-assessment",
+            sections: [
+                { h: "Our aim", p: ["Everyone should be able to order lángos on their own, without help. This site is built to meet WCAG 2.1 level AA, with the European Accessibility Act ((EU) 2019/882) in mind."] },
+                { h: "What we've done", p: [
+                        "Everything works with a keyboard, focus is always clearly visible, and a “Skip to content” link sits at the top of the page.",
+                        "Text contrast is at least 4.5:1 in both themes. Information is never shown by colour alone, for example in the allergen lists.",
+                        "Animations can be paused at the top of the page and switch off automatically if your system asks for reduced motion.",
+                        "The site works at 200% zoom and on phones. Form fields have visible labels, and error messages say exactly what to fix.",
+                        "Cart changes are announced to screen readers. Switching language also updates the page language.",
+                    ] },
+                { h: "Known limitations", p: ["The lángos illustrations are decorative; all their information is also available as text. If anything gets in your way, please tell us."] },
+                { h: "Feedback", p: [`Email ${B.email} or call ${B.phone}. We reply within 8 working days and can take your order by phone if needed.`] },
+            ],
+        },
+    };
+}
+
+/* =====================================================================
+   FELÜLETI SZÖVEGEK / INTERFACE TEXTS
+   Minden látható szöveg itt van, magyarul és angolul.
+===================================================================== */
+const HU_DAYS = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
+const HU_DAYS_ON = ["vasárnap", "hétfőn", "kedden", "szerdán", "csütörtökön", "pénteken", "szombaton"];
+const EN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const TEXTS = {
+  hu: {
+    locale: "hu-HU",
+    title: "Palkó Marcsi lángosa – Nagykátai piac",
+    skip: "Ugrás a tartalomra",
+    brandSub: "lángos a nagykátai piacon",
+    nav: { label: "Fő navigáció", menu: "Lángosok", info: "Átvétel", about: "Rólam", allergens: "Allergének", faq: "Kérdések" },
+    menuBtn: "Menü",
+    langBtn: "English",
+    toDark: "Sötét téma",
+    toLight: "Világos téma",
+    cart: "Kosár",
+    status: {
+      open: (close) => `Ma nyitva, ${close}-ig`,
+      closed: (inDays, wd, at) => `Most zárva, ${inDays === 0 ? "ma" : inDays === 1 ? "holnap" : HU_DAYS_ON[wd]} ${at}-kor nyitunk`,
+    },
+    hero: {
+      h1: "Lángos, ahogy Marcsi süti.",
+      lead: "Burgonyás tészta, reggel dagasztva, rendelésre kisütve. Rendeld meg itt, és vedd át a pultnál, vagy kivisszük Nagykátán.",
+      cta: "Rendelés",
+      cta2: "Átvétel és nyitvatartás",
+      facts: [
+        ["Rendelésre sütjük", "Nem áll a pulton, forrón kapod."],
+        ["15–20 perc", "Ennyi múlva viheted a piacról."],
+        ["Kiszállítás", "Nagykátán és kb. 5 km-es körzetében."],
+      ],
+    },
+    menu: {
+      h2: "Lángosok",
+      lead: "Normál (kb. 24 cm) vagy óriás (kb. 30 cm) méretben. Bármit levehetsz róla, és bármit rátehetsz.",
+      filterLabel: "Szűrés",
+      filters: { all: "Mind", savory: "Sós", sweet: "Édes", veg: "Vegetáriánus", vegan: "Vegán", spicy: "Csípős" },
+      excludeLabel: "Allergén nélkül",
+      glutenNote: "Minden lángosunk búzalisztből készül, ezért glutént tartalmaz.",
+      sortLabel: "Sorrend",
+      sorts: { rec: "Ajánlott", asc: "Ár szerint növekvő", desc: "Ár szerint csökkenő" },
+      count: (n) => (n ? `${n} lángos` : "Nincs a szűrésnek megfelelő lángos."),
+      reset: "Szűrők törlése",
+      customize: "Összeállítom",
+      add: "Kosárba",
+      added: "Hozzáadva",
+      addAria: (name) => `Kosárba: ${name}`,
+      customizeAria: (name) => `Összeállítom: ${name}`,
+      favorite: "Marcsi kedvence",
+      allergens: "Allergének",
+      legendLink: "Mit jelentenek a számok?",
+    },
+    diet: { veg: "vegetáriánus", vegan: "vegán", spicy: "csípős", sweet: "édes" },
+    product: {
+      size: "Méret",
+      normal: "Normál", normalNote: "kb. 24 cm",
+      large: "Óriás", largeNote: "kb. 30 cm",
+      onIt: "Ami rajta van",
+      onItHelp: "Vedd ki a pipát, ha nélküle kéred.",
+      extras: "Tegyünk rá még",
+      extra: "extra",
+      note: "Megjegyzés Marcsinak",
+      noteHelp: (n) => `Nem kötelező. Még ${n} karakter írható.`,
+      notePh: "Pl. jól átsütve, vagy vágjuk négyfelé",
+      qty: "Mennyiség",
+      dec: "Eggyel kevesebb",
+      inc: "Eggyel több",
+      allergens: "Allergének ebben az összeállításban:",
+      none: "nincs a 14 fő allergén közül",
+      add: (price) => `Kosárba, ${price}`,
+      save: (price) => `Mentés, ${price}`,
+      dough: "Az alap mindig burgonyás lángostészta (1).",
+    },
+    cartUi: {
+      title: "Kosár",
+      empty: "A kosár üres.",
+      browse: "Vissza a lángosokhoz",
+      toFree: (amt) => `Még ${amt}, és ingyen kivisszük.`,
+      free: "Ehhez a rendeléshez ingyenes a kiszállítás.",
+      without: "nélkül:",
+      plus: "plusz:",
+      edit: "Módosítás",
+      remove: "Törlés",
+      editAria: (n) => `Módosítás: ${n}`,
+      removeAria: (n) => `Törlés: ${n}`,
+      decAria: (n) => `${n}: eggyel kevesebb`,
+      incAria: (n) => `${n}: eggyel több`,
+      qtyAria: (n, q) => `${n}: ${q} db`,
+      subtotal: "Részösszeg",
+      deliveryInfo: (fee, from) => `Kiszállítás ${fee}, ${from} felett ingyenes. Átvétel a piacon díjtalan.`,
+      vat: "Az árak forintban értendők, és tartalmazzák az áfát.",
+      checkout: "Tovább a rendeléshez",
+      added: (name, count) => `Kosárba tettük: ${name}. A kosárban ${count} db lángos van.`,
+      removed: (name) => `Kivettük a kosárból: ${name}.`,
+      updated: "A kosár frissült.",
+      pcs: "db",
+    },
+    checkout: {
+      title: "Rendelés",
+      how: "Átvétel",
+      pickup: "Átveszem a piacon",
+      pickupNote: (addr) => `${addr}. Díjtalan.`,
+      delivery: "Kérem kiszállítva",
+      deliveryNote: (fee, from) => `Nagykátán és kb. 5 km-es körzetében. ${fee}, ${from} felett ingyenes.`,
+      when: "Időpont",
+      asap: "Amint lehet (kb. 25–40 perc)",
+      dayToday: "ma",
+      dayTomorrow: "holnap",
+      closedNote: "Most zárva vagyunk, a következő nyitásra rendelhetsz előre.",
+      noSlots: "A következő napokban nincs szabad időpont.",
+      contact: "Adataid",
+      required: "A csillaggal (*) jelölt mezők kitöltése kötelező.",
+      name: "Teljes név", phone: "Telefonszám", phoneHelp: "Ha kérdés van, ezen hívunk. Pl. +36 30 123 4567",
+      email: "E-mail-cím", emailHelp: "Ide küldjük a visszaigazolást.",
+      zip: "Irányítószám", city: "Település", street: "Utca, házszám", floor: "Emelet, ajtó, kapucsengő (nem kötelező)", courier: "Üzenet a futárnak (nem kötelező)",
+      payment: "Fizetés átvételkor",
+      pay: { cash: "Készpénz", card: "Bankkártya", szep: "SZÉP-kártya" },
+      summary: "Összesítés",
+      subtotal: "Részösszeg", deliveryFee: "Kiszállítási díj", free: "ingyenes", total: "Fizetendő",
+      receive: "Átvétel", time: "Időpont",
+      terms: "Elolvastam és elfogadom az Általános Szerződési Feltételeket.",
+      privacy: "Megismertem az Adatkezelési tájékoztatót.",
+      openTerms: "ÁSZF megnyitása",
+      openPrivacy: "Adatkezelési tájékoztató megnyitása",
+      newsletter: "Kérek e-mailt az új ízekről. Bármikor leiratkozhatok. (Nem kötelező.)",
+      noWithdrawal: "Frissen, egyedi kérésre készülő ételről van szó, ezért a 14 napos elállási jog nem illeti meg.",
+      back: "Vissza a kosárhoz",
+      place: "Megrendelés fizetési kötelezettséggel",
+      errTitle: (n) => `${n} mezőt javítani kell:`,
+      err: {
+        name: "Add meg a teljes neved.",
+        phone: "Adj meg egy telefonszámot, például +36 30 123 4567.",
+        email: "Adj meg egy érvényes e-mail-címet, például nev@pelda.hu.",
+        zip: "Az irányítószám 4 számjegyből áll.",
+        city: "Add meg a települést.",
+        street: "Add meg az utcát és a házszámot.",
+        time: "Válassz időpontot.",
+        terms: "A rendeléshez el kell fogadnod az ÁSZF-et.",
+        privacy: "A rendeléshez jelöld, hogy megismerted az adatkezelési tájékoztatót.",
+      },
+      doneTitle: "Megkaptuk a rendelésed.",
+      doneLead: "Marcsi már nyújtja a tésztát.",
+      orderNo: "Rendelésszám",
+      confirmSent: (email) => `A visszaigazolást elküldtük ide: ${email}`,
+      demo: "Bemutató verzió: a rendelés nem került továbbításra, e-mailt nem küldtünk.",
+      close: "Rendben",
+    },
+    info: {
+      h2: "Átvétel és nyitvatartás",
+      pickupH: "Átvétel a piacon",
+      pickupP: (addr) => `${addr}. Rendelés után kb. 15–20 perccel viheted.`,
+      deliveryH: "Kiszállítás",
+      deliveryP: (fee, from) => `Nagykátán és kb. 5 km-es körzetében, 25–40 perc alatt. ${fee}, ${from} feletti rendelésnél ingyenes.`,
+      payH: "Fizetés",
+      payP: "Átvételkor készpénzzel, bankkártyával vagy SZÉP-kártyával.",
+      hoursH: "Nyitvatartás",
+      today: "ma",
+      closed: "zárva",
+      days: HU_DAYS,
+      order: [2, 3, 4, 5, 6, 0, 1],
+    },
+    about: {
+      h2: "Marcsi vagyok.",
+      p1: "A nagykátai piacon sütöm a lángost. Hajnalban dagasztom a tésztát főtt burgonyával, attól marad puha a közepe és ropogós a széle.",
+      p2: "Rendelésre sütök, és azt teszem rá, amit kérsz. Ha valamit nélküle szeretnél, vagy dupla sajttal, csak jelöld be, vagy írd meg a megjegyzésben.",
+    },
+    allergens: {
+      h2: "Allergének",
+      lead: "Az 1169/2011/EU rendelet szerinti 14 fő allergénről tájékoztatunk. A számok mindenhol ugyanazt jelentik.",
+      caption: "Lángosok és a bennük lévő fő allergének",
+      extrasCaption: "Feltétek és allergénjeik",
+      product: "Lángos",
+      ingredient: "Feltét",
+      contains: "tartalmaz",
+      notContains: "nem tartalmaz",
+      others: "A többi fő allergén (2–6., 8., 9., 11., 13., 14.) összetevőként egyik lángosunkban sincs. Közös konyhában és közös olajban dolgozunk, ezért a nyomokban előforduló allergéneket nem tudjuk kizárni.",
+      legend: "A 14 fő allergén",
+      ask: "Kérdésed van? Hívd Marcsit:",
+    },
+    faq: {
+      h2: "Kérdések",
+      items: [
+        ["Mennyi idő alatt készül el?", "Átvételnél kb. 15–20 perc, kiszállításnál 25–40 perc, a forgalomtól függően. Ha időpontot választasz, addigra készítjük el."],
+        ["Van gluténmentes lángos?", "Most nincs. A tészta búzalisztből készül, és közös olajban sütünk, ezért lisztérzékenyeknek nem ajánljuk."],
+        ["Vegánként mit ehetek?", "A sós, a fokhagymás és a fahéjas-cukros lángos alapból vegán, a tésztánk tej és tojás nélkül készül. A gombás lángost is kérheted tejföl és sajt nélkül."],
+        ["Lemondhatom a rendelést?", "Frissen, egyedi kérésre készülő ételről van szó, ezért a 14 napos elállási jog nem illeti meg. Ha valami nem stimmel, hívj fel azonnal, és megoldjuk."],
+        ["Hogyan fizethetek?", "Átvételkor készpénzzel, bankkártyával vagy SZÉP-kártyával."],
+        ["Rendelhetek előre?", "Igen. A rendelésnél választhatsz időpontot a nyitvatartáson belül, akár a következő nyitvatartási napra is."],
+      ],
+    },
+    footer: {
+      legal: "Jogi információk",
+      impressum: "Impresszum",
+      terms: "ÁSZF",
+      privacy: "Adatkezelési tájékoztató",
+      a11y: "Akadálymentességi nyilatkozat",
+      allergens: "Allergén-tájékoztató",
+      contact: "Kapcsolat",
+      hours: "Nyitvatartás",
+      hoursShort: "Kedd–péntek 10–20, szombat–vasárnap 9–20, hétfőn zárva.",
+      storage: "Nem használunk követő sütiket. A kosarat, a nyelvet és a témát csak a böngésződ tárolja.",
+      rights: "Minden jog fenntartva.",
+      demo: "Bemutató verzió: a rendelések nem kerülnek továbbításra, a [szögletes zárójeles] adatok helyére a valós adatok kerülnek.",
+    },
+    legalTitle: "Jogi információk",
+    close: "Bezárás",
+  },
+
+  en: {
+    locale: "en-GB",
+    title: "Palkó Marcsi's lángos – Nagykáta market",
+    skip: "Skip to content",
+    brandSub: "lángos at the Nagykáta market",
+    nav: { label: "Main navigation", menu: "Lángos", info: "Pickup", about: "About", allergens: "Allergens", faq: "Questions" },
+    menuBtn: "Menu",
+    langBtn: "Magyar",
+    toDark: "Dark theme",
+    toLight: "Light theme",
+    cart: "Cart",
+    status: {
+      open: (close) => `Open today until ${close}`,
+      closed: (inDays, wd, at) => `Closed now, we open ${inDays === 0 ? "today" : inDays === 1 ? "tomorrow" : "on " + EN_DAYS[wd]} at ${at}`,
+    },
+    hero: {
+      h1: "Lángos, the way Marcsi makes it.",
+      lead: "Potato dough kneaded every morning and fried to order. Order here and pick it up at the stall, or we'll deliver in Nagykáta.",
+      cta: "Order now",
+      cta2: "Pickup and opening hours",
+      facts: [
+        ["Fried to order", "Nothing waits on the counter."],
+        ["15–20 minutes", "Then it's ready at the market."],
+        ["Delivery", "In Nagykáta and within about 5 km."],
+      ],
+    },
+    menu: {
+      h2: "Lángos",
+      lead: "Regular (approx. 24 cm) or giant (approx. 30 cm). Take anything off, put anything on.",
+      filterLabel: "Filter",
+      filters: { all: "All", savory: "Savoury", sweet: "Sweet", veg: "Vegetarian", vegan: "Vegan", spicy: "Spicy" },
+      excludeLabel: "Without allergen",
+      glutenNote: "All our lángos are made with wheat flour and contain gluten.",
+      sortLabel: "Order",
+      sorts: { rec: "Recommended", asc: "Price, low to high", desc: "Price, high to low" },
+      count: (n) => (n ? `${n} lángos` : "No lángos matches these filters."),
+      reset: "Clear filters",
+      customize: "Customise",
+      add: "Add",
+      added: "Added",
+      addAria: (name) => `Add: ${name}`,
+      customizeAria: (name) => `Customise: ${name}`,
+      favorite: "Marcsi's favourite",
+      allergens: "Allergens",
+      legendLink: "What do the numbers mean?",
+    },
+    diet: { veg: "vegetarian", vegan: "vegan", spicy: "spicy", sweet: "sweet" },
+    product: {
+      size: "Size",
+      normal: "Regular", normalNote: "approx. 24 cm",
+      large: "Giant", largeNote: "approx. 30 cm",
+      onIt: "What's on it",
+      onItHelp: "Untick anything you'd like left off.",
+      extras: "Add more toppings",
+      extra: "extra",
+      note: "Note for Marcsi",
+      noteHelp: (n) => `Optional. ${n} characters left.`,
+      notePh: "E.g. extra crispy, or cut into quarters",
+      qty: "Quantity",
+      dec: "One fewer",
+      inc: "One more",
+      allergens: "Allergens in this combination:",
+      none: "none of the 14 major allergens",
+      add: (price) => `Add to cart, ${price}`,
+      save: (price) => `Save, ${price}`,
+      dough: "The base is always our potato lángos dough (1).",
+    },
+    cartUi: {
+      title: "Cart",
+      empty: "Your cart is empty.",
+      browse: "Back to the menu",
+      toFree: (amt) => `Add ${amt} more for free delivery.`,
+      free: "Delivery is free for this order.",
+      without: "without:",
+      plus: "plus:",
+      edit: "Edit",
+      remove: "Remove",
+      editAria: (n) => `Edit: ${n}`,
+      removeAria: (n) => `Remove: ${n}`,
+      decAria: (n) => `${n}: one fewer`,
+      incAria: (n) => `${n}: one more`,
+      qtyAria: (n, q) => `${n}: ${q} pcs`,
+      subtotal: "Subtotal",
+      deliveryInfo: (fee, from) => `Delivery ${fee}, free over ${from}. Pickup at the market is free.`,
+      vat: "Prices are in Hungarian forints and include VAT.",
+      checkout: "Continue to checkout",
+      added: (name, count) => `Added to cart: ${name}. Your cart has ${count} item${count === 1 ? "" : "s"}.`,
+      removed: (name) => `Removed from cart: ${name}.`,
+      updated: "Cart updated.",
+      pcs: "pcs",
+    },
+    checkout: {
+      title: "Checkout",
+      how: "Pickup or delivery",
+      pickup: "I'll pick it up at the market",
+      pickupNote: (addr) => `${addr}. Free.`,
+      delivery: "Deliver it to me",
+      deliveryNote: (fee, from) => `In Nagykáta and within about 5 km. ${fee}, free over ${from}.`,
+      when: "Time",
+      asap: "As soon as possible (approx. 25–40 min)",
+      dayToday: "today",
+      dayTomorrow: "tomorrow",
+      closedNote: "We're closed right now. You can pre-order for our next opening.",
+      noSlots: "No time slots are available in the coming days.",
+      contact: "Your details",
+      required: "Fields marked with an asterisk (*) are required.",
+      name: "Full name", phone: "Phone number", phoneHelp: "We'll call this number if anything comes up. E.g. +36 30 123 4567",
+      email: "Email address", emailHelp: "We'll send your confirmation here.",
+      zip: "Postcode", city: "Town", street: "Street and house number", floor: "Floor, door, doorbell (optional)", courier: "Note for the courier (optional)",
+      payment: "Pay on receipt",
+      pay: { cash: "Cash", card: "Bank card", szep: "SZÉP card" },
+      summary: "Summary",
+      subtotal: "Subtotal", deliveryFee: "Delivery fee", free: "free", total: "Total to pay",
+      receive: "Pickup or delivery", time: "Time",
+      terms: "I have read and accept the Terms and Conditions.",
+      privacy: "I have read the Privacy Notice.",
+      openTerms: "Open the Terms",
+      openPrivacy: "Open the Privacy Notice",
+      newsletter: "Email me about new flavours. I can unsubscribe any time. (Optional.)",
+      noWithdrawal: "Food is made fresh to your request, so the 14-day right of withdrawal does not apply.",
+      back: "Back to cart",
+      place: "Place order with obligation to pay",
+      errTitle: (n) => `${n} field${n === 1 ? " needs" : "s need"} fixing:`,
+      err: {
+        name: "Enter your full name.",
+        phone: "Enter a phone number, for example +36 30 123 4567.",
+        email: "Enter a valid email address, for example name@example.com.",
+        zip: "Hungarian postcodes have 4 digits.",
+        city: "Enter your town.",
+        street: "Enter the street and house number.",
+        time: "Choose a time.",
+        terms: "To order, you need to accept the Terms and Conditions.",
+        privacy: "To order, confirm that you have read the Privacy Notice.",
+      },
+      doneTitle: "We've got your order.",
+      doneLead: "Marcsi is already stretching the dough.",
+      orderNo: "Order number",
+      confirmSent: (email) => `We've sent a confirmation to ${email}`,
+      demo: "Demo version: this order was not sent anywhere and no email went out.",
+      close: "Done",
+    },
+    info: {
+      h2: "Pickup and opening hours",
+      pickupH: "Pick up at the market",
+      pickupP: (addr) => `${addr}. Ready about 15–20 minutes after you order.`,
+      deliveryH: "Delivery",
+      deliveryP: (fee, from) => `In Nagykáta and within about 5 km, in 25–40 minutes. ${fee}, free on orders over ${from}.`,
+      payH: "Payment",
+      payP: "On receipt, with cash, bank card or SZÉP card.",
+      hoursH: "Opening hours",
+      today: "today",
+      closed: "closed",
+      days: EN_DAYS,
+      order: [2, 3, 4, 5, 6, 0, 1],
+    },
+    about: {
+      h2: "I'm Marcsi.",
+      p1: "I fry lángos at the Nagykáta market. I knead the dough at dawn with boiled potatoes, which keeps the middle soft and the edge crisp.",
+      p2: "I fry to order and top it the way you ask. Want something left off, or double cheese? Just tick the box, or write it in the note.",
+    },
+    allergens: {
+      h2: "Allergens",
+      lead: "We list the 14 major allergens defined by Regulation (EU) No 1169/2011. The numbers mean the same thing everywhere on this site.",
+      caption: "Lángos and the major allergens they contain",
+      extrasCaption: "Toppings and their allergens",
+      product: "Lángos",
+      ingredient: "Topping",
+      contains: "contains",
+      notContains: "does not contain",
+      others: "None of the other major allergens (2–6, 8, 9, 11, 13, 14) are ingredients in any of our lángos. We use a shared kitchen and shared frying oil, so we can't rule out traces.",
+      legend: "The 14 major allergens",
+      ask: "Questions? Call Marcsi:",
+    },
+    faq: {
+      h2: "Questions",
+      items: [
+        ["How long does it take?", "About 15–20 minutes for pickup and 25–40 minutes for delivery, depending on how busy we are. If you choose a time, it'll be ready by then."],
+        ["Do you have gluten-free lángos?", "Not at the moment. The dough is made with wheat flour and we use shared frying oil, so we don't recommend it for people with coeliac disease."],
+        ["What can I eat as a vegan?", "The salted, garlic and cinnamon sugar lángos are vegan as standard. Our dough has no milk or egg. You can also order the mushroom one without sour cream and cheese."],
+        ["Can I cancel my order?", "Food is made fresh to your request, so the 14-day right of withdrawal does not apply. If something's wrong, call us straight away and we'll sort it out."],
+        ["How can I pay?", "On receipt, with cash, bank card or SZÉP card."],
+        ["Can I order ahead?", "Yes. At checkout you can pick a time within opening hours, even for the next day we're open."],
+      ],
+    },
+    footer: {
+      legal: "Legal",
+      impressum: "Legal notice",
+      terms: "Terms",
+      privacy: "Privacy Notice",
+      a11y: "Accessibility statement",
+      allergens: "Allergen information",
+      contact: "Contact",
+      hours: "Opening hours",
+      hoursShort: "Tue–Fri 10–20, Sat–Sun 9–20, closed Mondays.",
+      storage: "We don't use tracking cookies. Your cart, language and theme are stored only in your browser.",
+      rights: "All rights reserved.",
+      demo: "Demo version: orders are not sent anywhere, and [bracketed] details will be replaced with real ones.",
+    },
+    legalTitle: "Legal information",
+    close: "Close",
+  },
+};
+
+/* =====================================================================
+   ALKALMAZÁS / APP
+===================================================================== */
+(function () {
+  "use strict";
+
+  /* ---------- segédfüggvények / helpers ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* nincs tárhely */ } },
+  };
+
+  /* Animációk: csak ha a rendszer nem kér csökkentett mozgást */
+  const motionOK = () => !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const later = (fn, ms) => (motionOK() ? setTimeout(fn, ms) : fn());
+
+  /* ---------- állapot / state ---------- */
+  const state = {
+    lang: store.get("pm-lang") === "en" ? "en" : "hu",
+    cart: loadCart(),
+    filter: "all",
+    exclude: [],
+    sort: "rec",
+    navOpen: false,
+  };
+  let T = TEXTS[state.lang];
+  let money = makeMoney();
+
+  function makeMoney() {
+    const nf = new Intl.NumberFormat(T.locale, { style: "currency", currency: "HUF", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return (n) => nf.format(n);
+  }
+  const L = (obj) => obj[state.lang];
+
+  /* ---------- kosár / cart ---------- */
+  function loadCart() {
+    try {
+      const raw = store.get("pm-cart-v2");
+      const list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) return [];
+      const okIng = (arr) => Array.isArray(arr) && arr.every((i) => ING[i]);
+      return list
+        .filter((l) => l && PRODUCT_BY_ID[l.productId] && okIng(l.removed) && okIng(l.extras) && Number(l.qty) > 0)
+        .map((l) => {
+          const cfg = { productId: l.productId, size: l.size === "large" ? "large" : "normal", removed: l.removed, extras: l.extras, note: String(l.note || "").slice(0, 140) };
+          return Object.assign(cfg, { key: lineKey(cfg), qty: Math.min(30, Math.floor(Number(l.qty))) });
+        });
+    } catch (e) { return []; }
+  }
+  const saveCart = () => store.set("pm-cart-v2", JSON.stringify(state.cart));
+  const cartCount = () => state.cart.reduce((s, l) => s + l.qty, 0);
+  const cartTotal = () => state.cart.reduce((s, l) => s + unitPrice(l) * l.qty, 0);
+
+  function addLine(cfg, qty) {
+    const key = lineKey(cfg);
+    const ex = state.cart.find((l) => l.key === key);
+    if (ex) ex.qty = Math.min(30, ex.qty + qty);
+    else state.cart.push(Object.assign({}, cfg, { key, qty }));
+    cartChanged();
+  }
+  function replaceLine(oldKey, cfg, qty) {
+    const idx = state.cart.findIndex((l) => l.key === oldKey);
+    state.cart = state.cart.filter((l) => l.key !== oldKey);
+    const key = lineKey(cfg);
+    const ex = state.cart.find((l) => l.key === key);
+    if (ex) ex.qty = Math.min(30, ex.qty + qty);
+    else state.cart.splice(idx < 0 ? state.cart.length : idx, 0, Object.assign({}, cfg, { key, qty }));
+    cartChanged();
+  }
+  function setQty(key, qty) {
+    if (qty <= 0) state.cart = state.cart.filter((l) => l.key !== key);
+    else { const l = state.cart.find((x) => x.key === key); if (l) l.qty = Math.min(30, qty); }
+    cartChanged();
+  }
+  function cartChanged() {
+    saveCart();
+    renderCartButton(true);
+    if ($("#cart-dialog").open) renderCart();
+  }
+
+  /* ---------- képernyőolvasó-bejelentés / announcements ---------- */
+  function announce(msg) {
+    const el = $("#live");
+    el.textContent = "";
+    setTimeout(() => { el.textContent = msg; }, 50);
+  }
+
+  /* Újrarajzolás úgy, hogy a fókusz megmaradjon (azonos id alapján). */
+  function renderInto(el, html) {
+    const id = document.activeElement && el.contains(document.activeElement) ? document.activeElement.id : null;
+    el.innerHTML = html;
+    if (id) { const again = document.getElementById(id); if (again) again.focus(); else return false; }
+    return true;
+  }
+
+  /* ---------- ablakok / dialogs ---------- */
+  const returnFocus = new Map();
+  function openDialog(dlg, trigger) {
+    if (dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
+    returnFocus.set(dlg, trigger || document.activeElement);
+    if (!dlg.open) dlg.showModal();
+    const first = dlg.querySelector("[data-autofocus]") || dlg.querySelector("h2");
+    if (first) { if (!first.hasAttribute("tabindex") && first.tagName === "H2") first.setAttribute("tabindex", "-1"); first.focus(); }
+  }
+  function closeDialog(dlg, instant) {
+    if (!dlg.open) return;
+    if (instant && dlg._closeTimer) { clearTimeout(dlg._closeTimer); dlg._closeTimer = null; dlg.classList.remove("is-closing"); }
+    if (instant || !motionOK()) { dlg.close(); return; }
+    if (dlg.classList.contains("is-closing")) return;
+    dlg.classList.add("is-closing");
+    dlg._closeTimer = setTimeout(() => { dlg._closeTimer = null; dlg.classList.remove("is-closing"); dlg.close(); }, 190);
+  }
+  $$("dialog").forEach((dlg) => {
+    dlg.addEventListener("close", () => {
+      const el = returnFocus.get(dlg);
+      if (dlg.id === "checkout-dialog") onCheckoutClosed();
+      const target = el && (document.contains(el) ? el : el.id ? document.getElementById(el.id) : null);
+      if (target) target.focus();
+    });
+    dlg.addEventListener("click", (e) => {
+      if (e.target !== dlg || e.detail === 0) return;
+      const r = dlg.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) closeDialog(dlg);
+    });
+    dlg.addEventListener("cancel", (e) => { e.preventDefault(); closeDialog(dlg); });
+  });
+
+  /* =================================================================
+     OLDAL / PAGE
+  ================================================================= */
+  function statusText() {
+    const s = openStatus(new Date());
+    return s.open ? T.status.open(s.closeAt) : T.status.closed(s.inDays, s.weekday, s.openAt);
+  }
+
+  function renderHeader() {
+    const links = ["menu", "info", "about", "allergens", "faq"];
+    const other = state.lang === "hu" ? "en" : "hu";
+    const themeLabel = document.documentElement.dataset.theme === "dark" ? T.toLight : T.toDark;
+    renderInto($("#site-header"), `
+      <div class="wrap header-in">
+        <a class="brand" href="#top"><b>Palkó Marcsi</b><span>${esc(T.brandSub)}</span></a>
+        <nav class="nav ${state.navOpen ? "is-open" : ""}" id="nav" aria-label="${esc(T.nav.label)}">
+          <ul>${links.map((k) => `<li><a href="#${k}" data-nav="${k}">${esc(T.nav[k])}</a></li>`).join("")}</ul>
+          <div class="mobile-tools">
+            <button type="button" class="link" id="lang-btn-m" data-action="lang" lang="${other}">${esc(T.langBtn)}</button>
+            <button type="button" class="link" id="theme-btn-m" data-action="theme">${esc(themeLabel)}</button>
+          </div>
+        </nav>
+        <div class="tools">
+          <button type="button" class="link lang-btn" id="lang-btn" data-action="lang" lang="${other}">${esc(T.langBtn)}</button>
+          <button type="button" class="link theme-btn" id="theme-btn" data-action="theme">${esc(themeLabel)}</button>
+          <button type="button" class="link nav-toggle" id="nav-toggle" data-action="nav" aria-expanded="${state.navOpen}" aria-controls="nav">${esc(T.menuBtn)}</button>
+          <button type="button" class="btn btn-sm cart-btn" id="cart-btn" data-action="open-cart" aria-haspopup="dialog"></button>
+        </div>
+      </div>`);
+    renderCartButton();
+  }
+
+  let lastCount = null;
+  function renderCartButton(animate) {
+    const b = $("#cart-btn");
+    if (!b) return;
+    const n = cartCount();
+    const dir = animate && lastCount !== null && n !== lastCount ? (n > lastCount ? "up" : "down") : "";
+    lastCount = n;
+    b.innerHTML = `${esc(T.cart)} <span class="count-box"><span class="count ${dir ? "tick-" + dir : ""}">${n}</span></span><span class="sr-only"> ${esc(T.cartUi.pcs)}</span>`;
+  }
+
+  let heroIntro = true;
+  function renderHero() {
+    $("#top").classList.toggle("intro", heroIntro);
+    heroIntro = false;
+    $("#top").innerHTML = `
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <p class="status in" style="--d:0"><b>${esc(BUSINESS.address)}</b> · <span id="status">${esc(statusText())}</span></p>
+            <h1 class="h1 in" style="--d:1">${esc(T.hero.h1)}</h1>
+            <p class="lead in" style="--d:2">${esc(T.hero.lead)}</p>
+            <div class="hero-actions in" style="--d:3">
+              <a class="btn btn-solid" href="#menu">${esc(T.hero.cta)}</a>
+              <a class="link" href="#info">${esc(T.hero.cta2)}</a>
+            </div>
+          </div>
+          ${DRAWING}
+        </div>
+        <ul class="facts">${T.hero.facts.map(([h, p], i) => `<li class="in" style="--d:${4 + i}"><b>${esc(h)}</b><span>${esc(p)}</span></li>`).join("")}</ul>
+      </div>`;
+  }
+
+  /* Kézzel rajzolt lángos – egyszerű vonalas SVG */
+  const DRAWING = `
+    <svg class="drawing" viewBox="0 0 320 300" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <radialGradient id="dough-grad" cx="45%" cy="40%" r="70%">
+          <stop offset="0%" style="stop-color:var(--dough-1)"/>
+          <stop offset="100%" style="stop-color:var(--dough-2)"/>
+        </radialGradient>
+      </defs>
+      <path class="dough draw" pathLength="1" style="--dd:.15s;--dl:1.3s" d="M40 160c-6-44 18-90 64-108 36-14 64-2 92-10 42-10 84 24 90 70 6 38-16 58-8 90 8 36-28 66-74 64-28-1-48 12-84 4-42-8-74-34-76-70-1-14-2-28-4-40z"/>
+      <path class="draw" pathLength="1" style="--dd:.9s" d="M62 150c2-30 18-58 48-74" stroke-width="1.3" opacity=".55"/>
+      <path class="draw" pathLength="1" style="--dd:1s" d="M262 206c-6 22-26 38-52 44" stroke-width="1.3" opacity=".55"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.05s" cx="82" cy="128" rx="9" ry="5" transform="rotate(-28 82 128)"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.12s" cx="214" cy="70" rx="8" ry="4.4" transform="rotate(6 214 70)"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.18s" cx="254" cy="98" rx="5" ry="3.2"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.24s" cx="96" cy="226" rx="10" ry="5.4" transform="rotate(14 96 226)"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.3s" cx="262" cy="214" rx="7" ry="4" transform="rotate(-30 262 214)"/>
+      <ellipse class="draw" pathLength="1" style="--dd:1.36s" cx="64" cy="190" rx="4.5" ry="3"/>
+      <path class="cream draw" pathLength="1" style="--dd:1.25s;--dl:1s" d="M112 140c6-28 40-36 64-28 24 6 46 0 56 24 10 26-10 42-18 60-10 22-42 26-64 16-20-8-42-6-48-28-4-16 6-28 10-44z"/>
+      <path class="cheese sprinkle" style="--dd:1.95s" d="M140 140l9-3M170 130l8 4M198 148l7-5M150 168l9 2M182 174l6 6M128 186l8-4M206 182l7 2M166 152l5 7M188 200l8-2M150 198l6-6M216 158l4 7M124 160l7 3" stroke-width="2.4"/>
+    </svg>`;
+
+  /* ---------- lángoslista / menu ---------- */
+  function filteredProducts() {
+    const list = PRODUCTS.filter((p) => {
+      const d = dietOf(p.base), al = allergensOf(p.base), f = state.filter;
+      if (f === "savory" && p.kind !== "savory") return false;
+      if (f === "sweet" && p.kind !== "sweet") return false;
+      if (f === "veg" && !d.veg) return false;
+      if (f === "vegan" && !d.vegan) return false;
+      if (f === "spicy" && !d.spicy) return false;
+      return !state.exclude.some((a) => al.includes(a));
+    });
+    const s = state.sort;
+    return list.sort((a, b) => (s === "asc" ? a.price - b.price : s === "desc" ? b.price - a.price : 0) || a.rank - b.rank);
+  }
+
+  const allergenText = (list) =>
+    list.length ? list.map((a) => `${esc((ALLERGEN_SHORT[a] ? L(ALLERGEN_SHORT[a]) : L(ALLERGENS[a - 1].name)).toLowerCase())} (${a})`).join(", ") : esc(T.product.none);
+
+  function dietText(ings, kind) {
+    const d = dietOf(ings), out = [];
+    if (d.vegan) out.push(T.diet.vegan); else if (d.veg) out.push(T.diet.veg);
+    if (d.spicy) out.push(T.diet.spicy);
+    if (kind === "sweet") out.push(T.diet.sweet);
+    return out.join(", ");
+  }
+
+  function renderMenu() {
+    const filters = ["all", "savory", "sweet", "veg", "vegan", "spicy"];
+    $("#menu").innerHTML = `
+      <div class="wrap">
+        <div class="section-grid">
+          <div>
+            <h2 class="h2">${esc(T.menu.h2)}</h2>
+            <p class="lead small" style="margin-top:12px">${esc(T.menu.lead)}</p>
+          </div>
+          <div>
+            <div class="toolbar">
+              <div role="group" aria-label="${esc(T.menu.filterLabel)}" class="filters" id="filters">
+                ${filters.map((f) => `<button type="button" id="flt-${f}" data-action="filter" data-value="${f}" aria-pressed="${state.filter === f}">${esc(T.menu.filters[f])}</button>`).join("")}
+              </div>
+              <div class="toolbar-row">
+                <fieldset>
+                  <legend>${esc(T.menu.excludeLabel)}:</legend>
+                  ${[7, 10, 12].map((a) => `<label class="check"><input type="checkbox" data-exclude="${a}" ${state.exclude.includes(a) ? "checked" : ""}> ${esc(L(ALLERGEN_SHORT[a]).toLowerCase())} (${a})</label>`).join("")}
+                </fieldset>
+                <span><label for="sort" class="muted">${esc(T.menu.sortLabel)}</label>
+                  <select id="sort" style="margin-left:8px">
+                    ${["rec", "asc", "desc"].map((s) => `<option value="${s}" ${state.sort === s ? "selected" : ""}>${esc(T.menu.sorts[s])}</option>`).join("")}
+                  </select>
+                </span>
+              </div>
+              <p class="help">${esc(T.menu.glutenNote)}</p>
+            </div>
+          </div>
+        </div>
+        <p class="result-count" id="result-count" role="status"></p>
+        <div id="menu-list"></div>
+      </div>`;
+    renderMenuList();
+  }
+
+  function renderMenuList() {
+    const list = filteredProducts();
+    $("#result-count").textContent = T.menu.count(list.length);
+    $$("#filters button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.value === state.filter)));
+    $("#menu-list").innerHTML = list.length
+      ? `<ul class="menu-list">${list.map((p, i) => itemHtml(p, i)).join("")}</ul>`
+      : `<div class="empty"><button type="button" class="btn" data-action="reset-filters">${esc(T.menu.reset)}</button></div>`;
+  }
+
+  function itemHtml(p, i) {
+    const name = L(p.name);
+    const diet = dietText(p.base, p.kind);
+    return `
+      <li class="item" style="--i:${i}">
+        <div class="item-head"><h3>${esc(name)}</h3><span class="item-price">${money(p.price)}</span></div>
+        <p class="item-desc">${esc(L(p.blurb))}</p>
+        <p class="item-meta">${p.favorite ? `<span class="fav">${esc(T.menu.favorite)}</span> · ` : ""}${diet ? esc(diet) + " · " : ""}${esc(T.menu.allergens)}: ${allergenText(allergensOf(p.base))}</p>
+        <div class="item-actions">
+          <button type="button" class="btn btn-sm btn-solid swap" id="add-${p.id}" data-action="add" data-id="${p.id}" aria-label="${esc(T.menu.addAria(name))}"><span class="swap-a">${esc(T.menu.add)}</span><span class="swap-b" aria-hidden="true">${esc(T.menu.added)} ✓</span></button>
+          <button type="button" class="link" id="cus-${p.id}" data-action="customize" data-id="${p.id}" aria-haspopup="dialog" aria-label="${esc(T.menu.customizeAria(name))}">${esc(T.menu.customize)}</button>
+        </div>
+      </li>`;
+  }
+
+  /* ---------- átvétel, rólam, allergének, kérdések, lábléc ---------- */
+  function renderInfo() {
+    const today = new Date().getDay();
+    $("#info").innerHTML = `
+      <div class="wrap section-grid">
+        <h2 class="h2">${esc(T.info.h2)}</h2>
+        <div>
+          <div class="info-cols">
+            <div><h3>${esc(T.info.pickupH)}</h3><p>${esc(T.info.pickupP(BUSINESS.address))}</p></div>
+            <div><h3>${esc(T.info.deliveryH)}</h3><p>${esc(T.info.deliveryP(money(DELIVERY_FEE), money(FREE_DELIVERY_FROM)))}</p></div>
+            <div><h3>${esc(T.info.payH)}</h3><p>${esc(T.info.payP)}</p></div>
+          </div>
+          <div class="hours">
+            <h3 class="h3">${esc(T.info.hoursH)}</h3>
+            <table>
+              <caption class="sr-only">${esc(T.info.hoursH)}</caption>
+              <tbody>
+                ${T.info.order.map((d) => {
+                  const h = HOURS[d];
+                  return `<tr class="${d === today ? "is-today" : ""}"><th scope="row">${esc(T.info.days[d])}${d === today ? ` (${esc(T.info.today)})` : ""}</th><td>${h ? `${hhmm(h[0])}–${hhmm(h[1])}` : esc(T.info.closed)}</td></tr>`;
+                }).join("")}
+              </tbody>
+            </table>
+            <p class="small muted" style="margin-top:12px">${esc(BUSINESS.address)} · <a href="tel:${BUSINESS.phoneHref}">${esc(BUSINESS.phone)}</a></p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderAbout() {
+    $("#about").innerHTML = `
+      <div class="wrap section-grid about">
+        <h2 class="h2">${esc(T.about.h2)}</h2>
+        <div><p>${esc(T.about.p1)}</p><p>${esc(T.about.p2)}</p></div>
+      </div>`;
+  }
+
+  function renderAllergens() {
+    const cols = USED_ALLERGENS;
+    const head = (label) => `<thead><tr><th scope="col">${esc(label)}</th>${cols.map((a) => `<th scope="col" class="c">${a}. ${esc(L(ALLERGEN_SHORT[a]))}</th>`).join("")}</tr></thead>`;
+    const cell = (yes) => yes
+      ? `<td class="c"><span aria-hidden="true">●</span><span class="sr-only">${esc(T.allergens.contains)}</span></td>`
+      : `<td class="c muted"><span aria-hidden="true">–</span><span class="sr-only">${esc(T.allergens.notContains)}</span></td>`;
+    const extras = Array.from(new Set(SAVORY_EXTRAS.concat(SWEET_EXTRAS)));
+    $("#allergens").innerHTML = `
+      <div class="wrap section-grid">
+        <div>
+          <h2 class="h2">${esc(T.allergens.h2)}</h2>
+          <p class="lead small" style="margin-top:12px">${esc(T.allergens.lead)}</p>
+        </div>
+        <div>
+          <div class="table-scroll" role="region" aria-labelledby="cap-a" tabindex="0">
+            <table class="table"><caption id="cap-a">${esc(T.allergens.caption)}</caption>${head(T.allergens.product)}
+              <tbody>${PRODUCTS.map((p) => { const al = allergensOf(p.base); return `<tr><th scope="row">${esc(L(p.name))}</th>${cols.map((a) => cell(al.includes(a))).join("")}</tr>`; }).join("")}</tbody>
+            </table>
+          </div>
+          <div class="table-scroll" role="region" aria-labelledby="cap-b" tabindex="0">
+            <table class="table"><caption id="cap-b">${esc(T.allergens.extrasCaption)}</caption>${head(T.allergens.ingredient)}
+              <tbody>${extras.map((id) => `<tr><th scope="row">${esc(L(ING[id].name))}</th>${cols.map((a) => cell(ING[id].allergens.includes(a))).join("")}</tr>`).join("")}</tbody>
+            </table>
+          </div>
+          <p class="muted" style="margin-top:20px;max-width:68ch">${esc(T.allergens.others)}</p>
+          <h3 class="h3" style="margin-top:32px">${esc(T.allergens.legend)}</h3>
+          <ol class="legend">${ALLERGENS.map((a) => `<li><b>${a}.</b> ${esc(L(a.name))}</li>`).join("")}</ol>
+          <p style="margin-top:24px">${esc(T.allergens.ask)} <a href="tel:${BUSINESS.phoneHref}">${esc(BUSINESS.phone)}</a></p>
+        </div>
+      </div>`;
+  }
+
+  function renderFaq() {
+    $("#faq").innerHTML = `
+      <div class="wrap section-grid">
+        <h2 class="h2">${esc(T.faq.h2)}</h2>
+        <div class="faq">${T.faq.items.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>
+      </div>`;
+  }
+
+  function renderFooter() {
+    const legal = [["impressum", T.footer.impressum], ["terms", T.footer.terms], ["privacy", T.footer.privacy], ["a11y", T.footer.a11y]];
+    $("#footer").innerHTML = `
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <p style="color:var(--ink);font:400 1.25rem/1.2 var(--serif)">Palkó Marcsi</p>
+            <p style="margin-top:8px;max-width:34ch">${esc(T.footer.storage)}</p>
+          </div>
+          <div>
+            <h2>${esc(T.footer.contact)}</h2>
+            <ul>
+              <li>${esc(BUSINESS.address)}</li>
+              <li><a href="tel:${BUSINESS.phoneHref}">${esc(BUSINESS.phone)}</a></li>
+              <li><a href="mailto:${BUSINESS.email}">${esc(BUSINESS.email)}</a></li>
+            </ul>
+          </div>
+          <div><h2>${esc(T.footer.hours)}</h2><p>${esc(T.footer.hoursShort)}</p></div>
+          <nav aria-labelledby="f-legal">
+            <h2 id="f-legal">${esc(T.footer.legal)}</h2>
+            <ul>
+              ${legal.map(([k, l]) => `<li><button type="button" class="link" id="legal-${k}" data-action="legal" data-tab="${k}" aria-haspopup="dialog">${esc(l)}</button></li>`).join("")}
+              <li><a class="link" href="#allergens">${esc(T.footer.allergens)}</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© ${new Date().getFullYear()} Palkó Marcsi. ${esc(T.footer.rights)}</span>
+          ${DEMO_MODE ? `<span>${esc(T.footer.demo)}</span>` : ""}
+        </div>
+      </div>`;
+  }
+
+  function renderAll() {
+    document.documentElement.lang = state.lang;
+    document.title = T.title;
+    $(".skip").textContent = T.skip;
+    renderHeader(); renderHero(); renderMenu(); renderInfo(); renderAbout(); renderAllergens(); renderFaq(); renderFooter();
+    observeSections();
+  }
+
+  /* =================================================================
+     TERMÉK ÖSSZEÁLLÍTÁSA / PRODUCT DIALOG
+  ================================================================= */
+  let pd = null; // { cfg, qty, editKey }
+
+  function openProduct(cfg, qty, editKey, trigger) {
+    pd = { cfg: { productId: cfg.productId, size: cfg.size, removed: cfg.removed.slice(), extras: cfg.extras.slice(), note: cfg.note }, qty, editKey: editKey || null };
+    renderProduct();
+    openDialog($("#product-dialog"), trigger);
+  }
+
+  function renderProduct() {
+    const p = PRODUCT_BY_ID[pd.cfg.productId];
+    const removable = p.base.filter((i) => i !== "dough");
+    const extras = p.kind === "sweet" ? SWEET_EXTRAS : SAVORY_EXTRAS;
+    const algNote = (id) => (ING[id].allergens.length ? ` (${ING[id].allergens.join(", ")})` : "");
+    $("#product-dialog").innerHTML = `
+      <form id="pd-form" novalidate>
+        <div class="d-head">
+          <h2 id="pd-title" tabindex="-1">${esc(L(p.name))}</h2>
+          <button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button>
+        </div>
+        <div class="d-body">
+          <p class="muted">${esc(L(p.blurb))}</p>
+          <fieldset class="group">
+            <legend>${esc(T.product.size)}</legend>
+            ${["normal", "large"].map((s) => `
+              <label class="choice"><input type="radio" name="size" value="${s}" ${pd.cfg.size === s ? "checked" : ""}>
+                <span class="grow">${esc(s === "normal" ? T.product.normal : T.product.large)}<small>${esc(s === "normal" ? T.product.normalNote : T.product.largeNote)}</small></span>
+                <span class="price">${s === "normal" ? money(p.price) : "+" + money(LARGE_EXTRA)}</span></label>`).join("")}
+          </fieldset>
+          ${removable.length ? `
+          <fieldset class="group">
+            <legend>${esc(T.product.onIt)}</legend>
+            <p class="help" style="margin-bottom:8px">${esc(T.product.onItHelp)} ${esc(T.product.dough)}</p>
+            ${removable.map((id) => `<label class="choice keep"><input type="checkbox" name="keep" value="${id}" ${pd.cfg.removed.includes(id) ? "" : "checked"}><span class="grow">${esc(L(ING[id].name))}${algNote(id)}</span></label>`).join("")}
+          </fieldset>` : `<p class="help group">${esc(T.product.dough)}</p>`}
+          <fieldset class="group">
+            <legend>${esc(T.product.extras)}</legend>
+            ${extras.map((id) => `<label class="choice"><input type="checkbox" name="extra" value="${id}" ${pd.cfg.extras.includes(id) ? "checked" : ""}>
+              <span class="grow">${p.base.includes(id) ? esc(T.product.extra) + " " : ""}${esc(L(ING[id].name))}${algNote(id)}</span>
+              <span class="price">+${money(ING[id].price)}</span></label>`).join("")}
+          </fieldset>
+          <div class="field group">
+            <label for="pd-note">${esc(T.product.note)}</label>
+            <textarea class="input" id="pd-note" name="note" maxlength="140" placeholder="${esc(T.product.notePh)}" aria-describedby="pd-note-help">${esc(pd.cfg.note)}</textarea>
+            <p class="help" id="pd-note-help"></p>
+          </div>
+          <p class="group small"><span id="pd-diet"></span> <span>${esc(T.product.allergens)}</span> <span id="pd-alg" aria-live="polite"></span></p>
+        </div>
+        <div class="d-foot">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span id="pd-qty-label">${esc(T.product.qty)}</span>
+            <div class="stepper" role="group" aria-labelledby="pd-qty-label">
+              <button type="button" id="pd-dec" data-action="pd-dec" aria-label="${esc(T.product.dec)}">−</button>
+              <span class="q" id="pd-qty" aria-live="polite"></span>
+              <button type="button" id="pd-inc" data-action="pd-inc" aria-label="${esc(T.product.inc)}">+</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-solid" id="pd-submit"></button>
+        </div>
+      </form>`;
+    updateProduct();
+  }
+
+  function updateProduct() {
+    const ings = lineIngredients(pd.cfg);
+    const p = PRODUCT_BY_ID[pd.cfg.productId];
+    const total = money(unitPrice(pd.cfg) * pd.qty);
+    const diet = dietText(ings, p.kind);
+    $("#pd-diet").textContent = diet ? cap(diet) + "." : "";
+    $("#pd-alg").innerHTML = allergenText(allergensOf(ings)) + ".";
+    $("#pd-qty").textContent = pd.qty;
+    $("#pd-dec").disabled = pd.qty <= 1;
+    $("#pd-inc").disabled = pd.qty >= 30;
+    $("#pd-note-help").textContent = T.product.noteHelp(140 - pd.cfg.note.length);
+    $("#pd-submit").textContent = pd.editKey ? T.product.save(total) : T.product.add(total);
+  }
+
+  $("#product-dialog").addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.name === "size") pd.cfg.size = t.value;
+    if (t.name === "keep") pd.cfg.removed = t.checked ? pd.cfg.removed.filter((x) => x !== t.value) : pd.cfg.removed.concat(t.value);
+    if (t.name === "extra") pd.cfg.extras = t.checked ? pd.cfg.extras.concat(t.value) : pd.cfg.extras.filter((x) => x !== t.value);
+    updateProduct();
+  });
+  $("#product-dialog").addEventListener("input", (e) => {
+    if (e.target.name === "note") { pd.cfg.note = e.target.value; updateProduct(); }
+  });
+  $("#product-dialog").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const cfg = Object.assign({}, pd.cfg, { note: pd.cfg.note.trim() });
+    const name = L(PRODUCT_BY_ID[cfg.productId].name);
+    if (pd.editKey) { replaceLine(pd.editKey, cfg, pd.qty); announce(T.cartUi.updated); }
+    else { addLine(cfg, pd.qty); announce(T.cartUi.added(name, cartCount())); }
+    closeDialog($("#product-dialog"));
+  });
+
+  /* =================================================================
+     KOSÁR / CART DRAWER
+  ================================================================= */
+  function lineDetail(l) {
+    const parts = [l.size === "large" ? T.product.large : T.product.normal];
+    if (l.extras.length) parts.push(`${T.cartUi.plus} ${l.extras.map((i) => L(ING[i].name)).join(", ")}`);
+    if (l.removed.length) parts.push(`${T.cartUi.without} ${l.removed.map((i) => L(ING[i].name)).join(", ")}`);
+    return esc(parts.join(", ")) + (l.note ? `<br>„${esc(l.note)}”` : "");
+  }
+
+  function renderCart() {
+    const dlg = $("#cart-dialog");
+    const sub = cartTotal();
+    const missing = Math.max(0, FREE_DELIVERY_FROM - sub);
+    const body = state.cart.length === 0
+      ? `<div class="d-body"><p>${esc(T.cartUi.empty)}</p><p style="margin-top:16px"><a class="btn" href="#menu" data-action="close-dialog">${esc(T.cartUi.browse)}</a></p></div>`
+      : `<div class="d-body">
+          <p class="small muted">${esc(missing > 0 ? T.cartUi.toFree(money(missing)) : T.cartUi.free)}</p>
+          <div class="free-bar" aria-hidden="true"><span style="width:${Math.min(100, Math.round((sub / FREE_DELIVERY_FROM) * 100))}%"></span></div>
+          <ul class="lines" style="margin-top:8px">
+            ${state.cart.map((l, i) => {
+              const name = L(PRODUCT_BY_ID[l.productId].name);
+              return `<li>
+                <span class="name">${esc(name)}</span>
+                <span class="num">${money(unitPrice(l) * l.qty)}</span>
+                <span class="detail">${lineDetail(l)}</span>
+                <span class="acts">
+                  <span class="stepper" role="group" aria-label="${esc(T.cartUi.qtyAria(name, l.qty))}">
+                    <button type="button" id="dec-${i}" data-action="dec" data-key="${esc(l.key)}" aria-label="${esc(T.cartUi.decAria(name))}">−</button>
+                    <span class="q">${l.qty}</span>
+                    <button type="button" id="inc-${i}" data-action="inc" data-key="${esc(l.key)}" aria-label="${esc(T.cartUi.incAria(name))}" ${l.qty >= 30 ? "disabled" : ""}>+</button>
+                  </span>
+                  <button type="button" class="link" id="edit-${i}" data-action="edit" data-key="${esc(l.key)}" aria-haspopup="dialog" aria-label="${esc(T.cartUi.editAria(name))}">${esc(T.cartUi.edit)}</button>
+                  <button type="button" class="link" id="rm-${i}" data-action="remove" data-key="${esc(l.key)}" aria-label="${esc(T.cartUi.removeAria(name))}">${esc(T.cartUi.remove)}</button>
+                </span>
+              </li>`;
+            }).join("")}
+          </ul>
+          <dl class="totals"><dt>${esc(T.cartUi.subtotal)} (${cartCount()} ${esc(T.cartUi.pcs)})</dt><dd>${money(sub)}</dd></dl>
+          <p class="help" style="margin-top:8px">${esc(T.cartUi.deliveryInfo(money(DELIVERY_FEE), money(FREE_DELIVERY_FROM)))} ${esc(T.cartUi.vat)}</p>
+          <p style="margin-top:20px"><button type="button" class="btn btn-solid" style="width:100%" id="to-checkout" data-action="checkout" aria-haspopup="dialog">${esc(T.cartUi.checkout)}</button></p>
+        </div>`;
+    const ok = renderInto(dlg, `
+      <div class="d-head"><h2 id="cart-title" tabindex="-1">${esc(T.cartUi.title)}</h2><button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button></div>
+      ${body}`);
+    if (!ok) $("#cart-title").focus();
+  }
+
+  /* =================================================================
+     RENDELÉS / CHECKOUT
+  ================================================================= */
+  const co = {
+    method: "pickup", time: "", slots: null, pay: "cash",
+    f: { name: "", phone: "", email: "", zip: "", city: "", street: "", floor: "", courier: "" },
+    terms: false, privacy: false, newsletter: false, errors: {}, done: null,
+  };
+  const phoneOk = (v) => { const s = v.replace(/[\s\-()/.]/g, ""); return /^(\+36|06)\d{8,9}$/.test(s) || /^\+\d{8,15}$/.test(s); };
+  const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+  const dayWord = (inDays, wd) => (inDays === 0 ? T.checkout.dayToday : inDays === 1 ? T.checkout.dayTomorrow : T.info.days[wd].toLowerCase());
+  const fee = () => (co.method === "delivery" && cartTotal() < FREE_DELIVERY_FROM ? DELIVERY_FEE : 0);
+
+  function timeLabel() {
+    if (co.time === "asap") return T.checkout.asap;
+    const s = co.slots && co.slots.slots.find((x) => x.value === co.time);
+    return s ? `${dayWord(co.slots.inDays, co.slots.weekday)} ${s.label}` : "";
+  }
+
+  function openCheckout(trigger) {
+    co.slots = orderSlots(new Date());
+    if (!co.time || (co.time !== "asap" && !co.slots.slots.some((s) => s.value === co.time)) || (co.time === "asap" && !co.slots.asap)) {
+      co.time = co.slots.asap ? "asap" : (co.slots.slots[0] ? co.slots.slots[0].value : "");
+    }
+    co.errors = {};
+    renderCheckout();
+    openDialog($("#checkout-dialog"), trigger);
+  }
+
+  function fieldHtml(k, label, o) {
+    o = o || {};
+    const err = co.errors[k];
+    const desc = [o.help ? `co-${k}-help` : "", err ? `co-${k}-err` : ""].filter(Boolean).join(" ");
+    const attrs = `id="co-${k}" name="${k}" ${o.area ? "" : `type="${o.type || "text"}"`} ${o.auto ? `autocomplete="${o.auto}"` : ""} ${o.mode ? `inputmode="${o.mode}"` : ""} ${o.max ? `maxlength="${o.max}"` : ""} ${o.req ? 'aria-required="true"' : ""} ${err ? 'aria-invalid="true"' : ""} ${desc ? `aria-describedby="${desc}"` : ""}`;
+    return `<div class="field">
+      <label for="co-${k}">${esc(label)}${o.req ? ' <span class="req" aria-hidden="true">*</span>' : ""}</label>
+      ${o.area ? `<textarea class="input" ${attrs}>${esc(co.f[k])}</textarea>` : `<input class="input" ${attrs} value="${esc(co.f[k])}">`}
+      ${o.help ? `<p class="help" id="co-${k}-help">${esc(o.help)}</p>` : ""}
+      ${err ? `<p class="error" id="co-${k}-err">${esc(err)}</p>` : ""}
+    </div>`;
+  }
+
+  function checkHtml(k, label, extra) {
+    const err = co.errors[k];
+    return `<div class="field">
+      <label class="check" style="align-items:flex-start;margin:0;font-weight:400">
+        <input type="checkbox" id="co-${k}" name="${k}" ${co[k] ? "checked" : ""} ${err ? `aria-invalid="true" aria-describedby="co-${k}-err"` : ""} style="margin-top:3px">
+        <span>${esc(label)}${k !== "newsletter" ? ' <span class="req" aria-hidden="true">*</span>' : ""}</span>
+      </label>
+      ${extra || ""}
+      ${err ? `<p class="error" id="co-${k}-err">${esc(err)}</p>` : ""}
+    </div>`;
+  }
+
+  function addressHtml() {
+    if (co.method !== "delivery") return "";
+    return `<div class="row2 zip">${fieldHtml("zip", T.checkout.zip, { req: true, auto: "postal-code", mode: "numeric", max: 4 })}${fieldHtml("city", T.checkout.city, { req: true, auto: "address-level2" })}</div>
+      ${fieldHtml("street", T.checkout.street, { req: true, auto: "address-line1" })}
+      ${fieldHtml("floor", T.checkout.floor, { auto: "address-line2" })}
+      ${fieldHtml("courier", T.checkout.courier, { area: true, max: 200 })}`;
+  }
+
+  function summaryHtml() {
+    const sub = cartTotal(), f = fee();
+    return `<ul class="lines">${state.cart.map((l) => `<li><span class="name">${l.qty} × ${esc(L(PRODUCT_BY_ID[l.productId].name))}</span><span class="num">${money(unitPrice(l) * l.qty)}</span><span class="detail">${lineDetail(l)}</span></li>`).join("")}</ul>
+      <dl class="totals">
+        <dt>${esc(T.checkout.subtotal)}</dt><dd>${money(sub)}</dd>
+        ${co.method === "delivery" ? `<dt>${esc(T.checkout.deliveryFee)}</dt><dd>${f ? money(f) : esc(T.checkout.free)}</dd>` : ""}
+        <dt class="grand">${esc(T.checkout.total)}</dt><dd class="grand">${money(sub + f)}</dd>
+      </dl>`;
+  }
+
+  function renderCheckout() {
+    const dlg = $("#checkout-dialog");
+    if (co.done) return renderDone();
+    if (!state.cart.length) {
+      dlg.innerHTML = `<div class="d-head"><h2 id="co-title" tabindex="-1">${esc(T.checkout.title)}</h2><button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button></div><div class="d-body"><p>${esc(T.cartUi.empty)}</p></div>`;
+      return;
+    }
+    const s = co.slots;
+    const errs = Object.entries(co.errors);
+    const noTime = !s.asap && s.slots.length === 0;
+    dlg.innerHTML = `
+      <form id="co-form" novalidate>
+        <div class="d-head"><h2 id="co-title" tabindex="-1">${esc(T.checkout.title)}</h2><button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button></div>
+        <div class="d-body">
+          ${errs.length ? `<div class="error-box" id="co-errors" tabindex="-1" role="alert"><p><b>${esc(T.checkout.errTitle(errs.length))}</b></p><ul>${errs.map(([k, m]) => `<li><a href="#co-${k}" data-focus="co-${k}">${esc(m)}</a></li>`).join("")}</ul></div>` : ""}
+          <p class="help" style="margin-top:4px">${esc(T.checkout.required)}</p>
+
+          <fieldset class="group">
+            <legend>${esc(T.checkout.how)}</legend>
+            <label class="choice"><input type="radio" name="method" value="pickup" ${co.method === "pickup" ? "checked" : ""}><span class="grow">${esc(T.checkout.pickup)}<br><small style="margin:0">${esc(T.checkout.pickupNote(BUSINESS.address))}</small></span></label>
+            <label class="choice"><input type="radio" name="method" value="delivery" ${co.method === "delivery" ? "checked" : ""}><span class="grow">${esc(T.checkout.delivery)}<br><small style="margin:0">${esc(T.checkout.deliveryNote(money(DELIVERY_FEE), money(FREE_DELIVERY_FROM)))}</small></span></label>
+          </fieldset>
+
+          <div class="field group">
+            <label for="co-time">${esc(T.checkout.when)} <span class="req" aria-hidden="true">*</span></label>
+            ${!s.asap && s.slots.length ? `<p class="help" id="co-time-help" style="margin:0 0 6px">${esc(T.checkout.closedNote)}</p>` : ""}
+            ${noTime ? `<p class="error">${esc(T.checkout.noSlots)}</p>` : `
+            <select id="co-time" name="time" aria-required="true" ${co.errors.time ? 'aria-invalid="true"' : ""} ${!s.asap ? 'aria-describedby="co-time-help"' : ""}>
+              ${s.asap ? `<option value="asap" ${co.time === "asap" ? "selected" : ""}>${esc(T.checkout.asap)}</option>` : ""}
+              ${s.slots.map((x) => `<option value="${x.value}" ${co.time === x.value ? "selected" : ""}>${esc(dayWord(s.inDays, s.weekday))} ${x.label}</option>`).join("")}
+            </select>`}
+            ${co.errors.time ? `<p class="error">${esc(co.errors.time)}</p>` : ""}
+          </div>
+
+          <fieldset class="group">
+            <legend>${esc(T.checkout.contact)}</legend>
+            ${fieldHtml("name", T.checkout.name, { req: true, auto: "name" })}
+            <div class="row2">
+              ${fieldHtml("phone", T.checkout.phone, { req: true, type: "tel", auto: "tel", mode: "tel", help: T.checkout.phoneHelp })}
+              ${fieldHtml("email", T.checkout.email, { req: true, type: "email", auto: "email", mode: "email", help: T.checkout.emailHelp })}
+            </div>
+            <div id="co-address">${addressHtml()}</div>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>${esc(T.checkout.payment)}</legend>
+            ${["cash", "card", "szep"].map((p) => `<label class="choice"><input type="radio" name="pay" value="${p}" ${co.pay === p ? "checked" : ""}><span class="grow">${esc(T.checkout.pay[p])}</span></label>`).join("")}
+          </fieldset>
+
+          <div class="group">
+            <h3 class="h3">${esc(T.checkout.summary)}</h3>
+            <div id="co-summary">${summaryHtml()}</div>
+          </div>
+
+          <div class="group">
+            ${checkHtml("terms", T.checkout.terms, `<button type="button" class="link small" style="margin-left:26px" data-action="legal" data-tab="terms" aria-haspopup="dialog">${esc(T.checkout.openTerms)}</button>`)}
+            ${checkHtml("privacy", T.checkout.privacy, `<button type="button" class="link small" style="margin-left:26px" data-action="legal" data-tab="privacy" aria-haspopup="dialog">${esc(T.checkout.openPrivacy)}</button>`)}
+            ${checkHtml("newsletter", T.checkout.newsletter)}
+            <p class="notice">${esc(T.checkout.noWithdrawal)}</p>
+          </div>
+        </div>
+        <div class="d-foot">
+          <button type="button" class="link" data-action="back-to-cart">${esc(T.checkout.back)}</button>
+          <button type="submit" class="btn btn-solid" ${noTime ? "disabled" : ""}>${esc(T.checkout.place)}</button>
+        </div>
+      </form>`;
+  }
+
+  function validate() {
+    const E = T.checkout.err, e = {}, f = co.f;
+    const fresh = orderSlots(new Date());
+    const stillOk = co.time === "asap" ? fresh.asap : fresh.slots.some((x) => x.value === co.time);
+    if (!co.time || !stillOk) {
+      e.time = E.time;
+      co.slots = fresh;
+      co.time = fresh.asap ? "asap" : (fresh.slots[0] ? fresh.slots[0].value : "");
+    }
+    if (f.name.trim().length < 3) e.name = E.name;
+    if (!phoneOk(f.phone)) e.phone = E.phone;
+    if (!emailOk(f.email)) e.email = E.email;
+    if (co.method === "delivery") {
+      if (!/^\d{4}$/.test(f.zip.trim())) e.zip = E.zip;
+      if (!f.city.trim()) e.city = E.city;
+      if (!f.street.trim()) e.street = E.street;
+    }
+    if (!co.terms) e.terms = E.terms;
+    if (!co.privacy) e.privacy = E.privacy;
+    return e;
+  }
+
+  function renderDone() {
+    const d = co.done;
+    $("#checkout-dialog").innerHTML = `
+      <div class="d-head"><h2 id="co-title" tabindex="-1">${esc(T.checkout.doneTitle)}</h2><button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button></div>
+      <div class="d-body">
+        <svg class="done-check" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="draw" pathLength="1" style="--dd:.1s" d="M10 25c4 3 7 7 10 11 6-10 12-18 19-25"/></svg>
+        <p class="lead">${esc(T.checkout.doneLead)}</p>
+        <dl class="totals" style="margin-top:24px">
+          <dt>${esc(T.checkout.orderNo)}</dt><dd><b>${esc(d.no)}</b></dd>
+          <dt>${esc(T.checkout.receive)}</dt><dd>${esc(d.method === "pickup" ? T.checkout.pickup : T.checkout.delivery)}</dd>
+          <dt>${esc(T.checkout.time)}</dt><dd>${esc(d.time)}</dd>
+          <dt class="grand">${esc(T.checkout.total)}</dt><dd class="grand">${money(d.total)}</dd>
+        </dl>
+        ${DEMO_MODE ? `<p class="notice">${esc(T.checkout.demo)}</p>` : `<p style="margin-top:16px">${esc(T.checkout.confirmSent(d.email))}</p>`}
+        <p style="margin-top:24px"><button type="button" class="btn btn-solid" data-action="close-dialog">${esc(T.checkout.close)}</button></p>
+      </div>`;
+  }
+
+  function onCheckoutClosed() {
+    if (!co.done) return;
+    state.cart = [];
+    cartChanged();
+    co.done = null; co.terms = false; co.privacy = false; co.newsletter = false; co.time = ""; co.errors = {};
+    Object.keys(co.f).forEach((k) => (co.f[k] = ""));
+  }
+
+  const coDlg = $("#checkout-dialog");
+  coDlg.addEventListener("input", (e) => {
+    const t = e.target;
+    if (t.name in co.f) co.f[t.name] = t.value;
+  });
+  coDlg.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.name === "method") { co.method = t.value; $("#co-address").innerHTML = addressHtml(); $("#co-summary").innerHTML = summaryHtml(); }
+    if (t.name === "time") co.time = t.value;
+    if (t.name === "pay") co.pay = t.value;
+    if (t.name === "terms" || t.name === "privacy" || t.name === "newsletter") co[t.name] = t.checked;
+  });
+  coDlg.addEventListener("submit", (e) => {
+    e.preventDefault();
+    co.errors = validate();
+    if (Object.keys(co.errors).length) {
+      renderCheckout();
+      $("#co-errors").focus();
+      return;
+    }
+    /* ↓ Élesítéskor itt kell elküldeni a rendelést (pl. fetch('/api/order', …)). */
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    co.done = {
+      no: `PM-${String(d.getFullYear()).slice(2)}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${Math.floor(1000 + Math.random() * 9000)}`,
+      total: cartTotal() + fee(), email: co.f.email.trim(), method: co.method, time: timeLabel(),
+    };
+    renderDone();
+    $("#co-title").focus();
+  });
+
+  /* =================================================================
+     JOGI INFORMÁCIÓK / LEGAL DIALOG
+  ================================================================= */
+  const LEGAL_TABS = ["impressum", "terms", "privacy", "a11y"];
+  function openLegal(tab, trigger) {
+    renderLegal(tab);
+    openDialog($("#legal-dialog"), trigger);
+  }
+  function renderLegal(tab) {
+    const docs = legalDocs(state.lang);
+    const names = { impressum: T.footer.impressum, terms: T.footer.terms, privacy: T.footer.privacy, a11y: T.footer.a11y };
+    const d = docs[tab];
+    $("#legal-dialog").innerHTML = `
+      <div class="d-head"><h2 id="legal-title" tabindex="-1">${esc(T.legalTitle)}</h2><button type="button" class="link" data-action="close-dialog">${esc(T.close)}</button></div>
+      <div class="d-body legal">
+        <div class="tabs" role="tablist" aria-labelledby="legal-title">
+          ${LEGAL_TABS.map((k) => `<button type="button" role="tab" id="tab-${k}" aria-controls="legal-panel" aria-selected="${k === tab}" tabindex="${k === tab ? 0 : -1}" data-action="legal-tab" data-tab="${k}">${esc(names[k])}</button>`).join("")}
+        </div>
+        <div id="legal-panel" role="tabpanel" aria-labelledby="tab-${tab}" tabindex="0">
+          <h3 class="doc-title">${esc(d.title)}</h3>
+          <p class="help">${esc(d.updated)}</p>
+          ${DEMO_MODE ? `<p class="notice">${esc(T.footer.demo)}</p>` : ""}
+          ${d.sections.map((s) => `<h3>${esc(s.h)}</h3>${s.p.map((p) => `<p>${esc(p)}</p>`).join("")}`).join("")}
+        </div>
+      </div>`;
+  }
+  $("#legal-dialog").addEventListener("keydown", (e) => {
+    const t = e.target;
+    if (t.getAttribute("role") !== "tab" || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+    e.preventDefault();
+    const i = LEGAL_TABS.indexOf(t.dataset.tab);
+    const n = e.key === "Home" ? 0 : e.key === "End" ? LEGAL_TABS.length - 1 : (i + (e.key === "ArrowRight" ? 1 : -1) + LEGAL_TABS.length) % LEGAL_TABS.length;
+    renderLegal(LEGAL_TABS[n]);
+    $(`#tab-${LEGAL_TABS[n]}`).focus();
+  });
+
+  /* Kosártétel eltűnése: rövid elhalványulás, aztán törlés */
+  function leave(btn, done) {
+    const li = btn.closest("li");
+    if (li) li.classList.add("is-leaving");
+    later(done, 220);
+  }
+
+  /* =================================================================
+     ESEMÉNYEK / EVENTS
+  ================================================================= */
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-action], [data-focus]");
+    if (!a) return;
+    if (a.dataset.focus) { e.preventDefault(); const el = document.getElementById(a.dataset.focus); if (el) el.focus(); return; }
+    const act = a.dataset.action;
+    const dlg = a.closest("dialog");
+    switch (act) {
+      case "lang":
+        state.lang = state.lang === "hu" ? "en" : "hu";
+        store.set("pm-lang", state.lang);
+        T = TEXTS[state.lang]; money = makeMoney();
+        renderAll();
+        (document.getElementById(a.id) || $("#lang-btn")).focus();
+        announce(state.lang === "hu" ? "Magyar nyelv" : "English");
+        break;
+      case "theme": {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        store.set("pm-theme", next);
+        const label = next === "dark" ? T.toLight : T.toDark;
+        $$("[data-action=theme]").forEach((b) => (b.textContent = label));
+        break;
+      }
+      case "nav":
+        state.navOpen = !state.navOpen;
+        $("#nav").classList.toggle("is-open", state.navOpen);
+        a.setAttribute("aria-expanded", String(state.navOpen));
+        break;
+      case "filter": state.filter = a.dataset.value; renderMenuList(); break;
+      case "reset-filters": state.filter = "all"; state.exclude = []; state.sort = "rec"; renderMenu(); $("#flt-all").focus(); break;
+      case "add": {
+        addLine(defaultConfig(a.dataset.id), 1);
+        announce(T.cartUi.added(L(PRODUCT_BY_ID[a.dataset.id].name), cartCount()));
+        clearTimeout(a._t);
+        a.classList.add("is-added");
+        a._t = setTimeout(() => a.classList.remove("is-added"), 1500);
+        break;
+      }
+      case "customize": openProduct(defaultConfig(a.dataset.id), 1, null, a); break;
+      case "pd-dec": pd.qty = Math.max(1, pd.qty - 1); updateProduct(); break;
+      case "pd-inc": pd.qty = Math.min(30, pd.qty + 1); updateProduct(); break;
+      case "open-cart": renderCart(); openDialog($("#cart-dialog"), a); break;
+      case "dec": case "inc": {
+        const l = state.cart.find((x) => x.key === a.dataset.key);
+        if (!l) break;
+        const name = L(PRODUCT_BY_ID[l.productId].name);
+        const q = l.qty + (act === "inc" ? 1 : -1);
+        if (q <= 0) { leave(a, () => setQty(l.key, 0)); } else setQty(l.key, q);
+        announce(q <= 0 ? T.cartUi.removed(name) : T.cartUi.qtyAria(name, q));
+        break;
+      }
+      case "remove": {
+        const l = state.cart.find((x) => x.key === a.dataset.key);
+        if (!l) break;
+        leave(a, () => setQty(l.key, 0));
+        announce(T.cartUi.removed(L(PRODUCT_BY_ID[l.productId].name)));
+        break;
+      }
+      case "edit": {
+        const l = state.cart.find((x) => x.key === a.dataset.key);
+        if (l) openProduct(l, l.qty, l.key, a);
+        break;
+      }
+      case "checkout": closeDialog($("#cart-dialog"), true); openCheckout($("#cart-btn")); break;
+      case "back-to-cart": closeDialog($("#checkout-dialog"), true); renderCart(); openDialog($("#cart-dialog"), $("#cart-btn")); break;
+      case "legal": openLegal(a.dataset.tab, a); break;
+      case "legal-tab": renderLegal(a.dataset.tab); $(`#tab-${a.dataset.tab}`).focus(); break;
+      case "close-dialog": if (dlg) closeDialog(dlg); break;
+    }
+  });
+
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.dataset.exclude) {
+      const a = Number(t.dataset.exclude);
+      state.exclude = t.checked ? state.exclude.concat(a) : state.exclude.filter((x) => x !== a);
+      renderMenuList();
+    }
+    if (t.id === "sort") { state.sort = t.value; renderMenuList(); }
+  });
+
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest(".nav a");
+    if (link) { state.navOpen = false; $("#nav").classList.remove("is-open"); $("#nav-toggle").setAttribute("aria-expanded", "false"); }
+  });
+
+  /* Fejléc vonala görgetéskor, aktuális szekció kiemelése */
+  window.addEventListener("scroll", () => $("#site-header").classList.toggle("is-scrolled", window.scrollY > 8), { passive: true });
+  let io = null;
+  function observeSections() {
+    if (io) io.disconnect();
+    if (!("IntersectionObserver" in window)) return;
+    io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        $$("[data-nav]").forEach((a) => a.classList.toggle("is-current", a.dataset.nav === en.target.id));
+      });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    ["menu", "info", "about", "allergens", "faq"].forEach((id) => io.observe(document.getElementById(id)));
+  }
+  (function revealSections() {
+    if (!("IntersectionObserver" in window)) return;
+    const els = $$(".section");
+    els.forEach((el) => el.classList.add("reveal"));
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("is-in"); ro.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -12% 0px" });
+    els.forEach((el) => ro.observe(el));
+  })();
+
+  /* Nyitvatartási állapot percenkénti frissítése */
+  let lastDay = new Date().getDay();
+  setInterval(() => {
+    const s = $("#status");
+    if (s) s.textContent = statusText();
+    const d = new Date().getDay();
+    if (d !== lastDay) { lastDay = d; renderInfo(); }
+  }, 60000);
 
   renderAll();
 })();
